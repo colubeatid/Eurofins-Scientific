@@ -1,0 +1,2151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eurofins Scientific — Investment Thesis</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0a0c10;
+    --bg2: #0e1117;
+    --bg3: #13171f;
+    --border: #1e2530;
+    --accent: #00d4aa;
+    --accent2: #f7c948;
+    --accent3: #e85d4a;
+    --accent4: #5b8cff;
+    --text: #e8ecf0;
+    --text2: #8a93a2;
+    --text3: #555f6e;
+    --jpm-blue: #003087;
+    --jpm-gold: #c8a415;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+
+  /* GRID NOISE TEXTURE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+      repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,.015) 39px, rgba(255,255,255,.015) 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,.015) 39px, rgba(255,255,255,.015) 40px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(135deg, #080b10 0%, #0d1420 60%, #0a1228 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 60px 0 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::after {
+    content: 'ERF.PA';
+    position: absolute;
+    right: -40px;
+    top: 50%;
+    transform: translateY(-50%) rotate(-8deg);
+    font-family: 'DM Mono', monospace;
+    font-size: 160px;
+    font-weight: 500;
+    color: rgba(0,212,170,.04);
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  .ticker-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .ticker {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent);
+    background: rgba(0,212,170,.1);
+    border: 1px solid rgba(0,212,170,.25);
+    padding: 4px 12px;
+    letter-spacing: .05em;
+  }
+
+  .exchange {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: .1em;
+  }
+
+  .rating-badge {
+    margin-left: auto;
+    background: rgba(0,212,170,.15);
+    border: 1px solid var(--accent);
+    padding: 6px 16px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .15em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+
+  header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(28px, 4vw, 48px);
+    font-weight: 400;
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+
+  header h1 em {
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  .sub-headline {
+    font-size: 14px;
+    color: var(--text2);
+    letter-spacing: .03em;
+    max-width: 600px;
+    margin-bottom: 36px;
+  }
+
+  .key-metrics-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    max-width: 720px;
+  }
+
+  .metric-cell {
+    background: var(--bg2);
+    padding: 14px 18px;
+  }
+
+  .metric-cell .label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .metric-cell .value {
+    font-family: 'DM Mono', monospace;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .metric-cell .value.up { color: var(--accent); }
+  .metric-cell .value.warn { color: var(--accent2); }
+  .metric-cell .value.target { color: var(--accent4); }
+
+  /* ── SECTION STRUCTURE ── */
+  section {
+    padding: 64px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(22px, 3vw, 32px);
+    font-weight: 400;
+    color: #fff;
+    margin-bottom: 8px;
+    line-height: 1.25;
+  }
+
+  .section-desc {
+    color: var(--text2);
+    max-width: 640px;
+    margin-bottom: 40px;
+    font-size: 14px;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky;
+    top: 0;
+    background: rgba(10,12,16,.95);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    z-index: 100;
+    padding: 0;
+  }
+
+  .nav-inner {
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .nav-inner::-webkit-scrollbar { display: none; }
+
+  .nav-link {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--text3);
+    padding: 16px 20px;
+    text-decoration: none;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all .2s;
+  }
+
+  .nav-link:hover, .nav-link.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* ── SEGMENTS ── */
+  .segments-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--border);
+    margin-bottom: 32px;
+  }
+
+  @media (max-width: 700px) {
+    .segments-grid { grid-template-columns: 1fr; }
+  }
+
+  .segment-card {
+    background: var(--bg2);
+    padding: 28px;
+    cursor: pointer;
+    transition: background .2s;
+    border-top: 3px solid transparent;
+  }
+
+  .segment-card.active { background: var(--bg3); }
+  .segment-card[data-color="food"].active { border-top-color: var(--accent); }
+  .segment-card[data-color="pharma"].active { border-top-color: var(--accent4); }
+  .segment-card[data-color="diag"].active { border-top-color: var(--accent2); }
+
+  .segment-card:hover { background: var(--bg3); }
+
+  .seg-pct {
+    font-family: 'DM Mono', monospace;
+    font-size: 32px;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+
+  .seg-pct.food { color: var(--accent); }
+  .seg-pct.pharma { color: var(--accent4); }
+  .seg-pct.diag { color: var(--accent2); }
+
+  .seg-name {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 8px;
+    color: #fff;
+  }
+
+  .seg-growth {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text2);
+  }
+
+  .segment-detail {
+    display: none;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 32px;
+    animation: fadeIn .3s ease;
+  }
+
+  .segment-detail.visible { display: block; }
+
+  .seg-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  @media (max-width: 600px) { .seg-detail-grid { grid-template-columns: 1fr; } }
+
+  .seg-detail-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    margin-bottom: 12px;
+    color: #fff;
+  }
+
+  .seg-stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+
+  .seg-stat-row:last-child { border-bottom: none; }
+  .seg-stat-row .key { color: var(--text2); }
+  .seg-stat-row .val { font-family: 'DM Mono', monospace; font-weight: 500; }
+
+  /* ── MOAT ── */
+  .moat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  @media (max-width: 700px) { .moat-grid { grid-template-columns: 1fr; } }
+
+  .moat-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color .2s;
+  }
+
+  .moat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .4s ease;
+  }
+
+  .moat-card:hover::before { transform: scaleX(1); }
+  .moat-card:hover { border-color: rgba(0,212,170,.3); }
+
+  .moat-icon {
+    font-size: 28px;
+    margin-bottom: 16px;
+  }
+
+  .moat-title {
+    font-weight: 700;
+    font-size: 14px;
+    color: #fff;
+    margin-bottom: 10px;
+    letter-spacing: .02em;
+    text-transform: uppercase;
+  }
+
+  .moat-body {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  /* ── CHARTS ── */
+  .charts-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  @media (max-width: 700px) { .charts-row { grid-template-columns: 1fr; } }
+
+  .chart-box {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    padding: 24px;
+  }
+
+  .chart-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    margin-bottom: 4px;
+  }
+
+  .chart-subtitle {
+    font-size: 13px;
+    color: var(--text2);
+    margin-bottom: 20px;
+  }
+
+  .chart-container { position: relative; height: 220px; }
+
+  /* ── CROCODILE MOUTH ── */
+  .croc-mouth {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    padding: 32px;
+    position: relative;
+  }
+
+  .croc-canvas-wrap { position: relative; height: 280px; }
+
+  .croc-annotation {
+    position: absolute;
+    right: 20px;
+    top: 40px;
+    background: rgba(0,212,170,.1);
+    border: 1px solid rgba(0,212,170,.3);
+    padding: 10px 16px;
+    max-width: 180px;
+  }
+
+  .croc-annotation .label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .croc-annotation .body {
+    font-size: 12px;
+    color: var(--text2);
+  }
+
+  /* ── REAL ESTATE ── */
+  .re-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    background: var(--border);
+    margin-bottom: 24px;
+  }
+
+  @media (max-width: 600px) { .re-grid { grid-template-columns: 1fr; } }
+
+  .re-cell {
+    background: var(--bg2);
+    padding: 28px;
+  }
+
+  .re-cell .big {
+    font-family: 'DM Serif Display', serif;
+    font-size: 36px;
+    color: var(--accent2);
+    margin-bottom: 6px;
+  }
+
+  .re-cell .title {
+    font-weight: 600;
+    font-size: 14px;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+
+  .re-cell .body {
+    font-size: 13px;
+    color: var(--text2);
+  }
+
+  /* ── VALUATION ── */
+  .val-scenarios {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--border);
+    margin-bottom: 32px;
+  }
+
+  @media (max-width: 600px) { .val-scenarios { grid-template-columns: 1fr; } }
+
+  .scenario {
+    background: var(--bg2);
+    padding: 32px 24px;
+    text-align: center;
+    position: relative;
+  }
+
+  .scenario.base {
+    background: rgba(0,212,170,.05);
+    border: 1px solid rgba(0,212,170,.2);
+  }
+
+  .scenario-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .scenario-label.bear { color: var(--accent3); }
+  .scenario-label.base-l { color: var(--accent); }
+  .scenario-label.bull { color: var(--accent4); }
+
+  .scenario-price {
+    font-family: 'DM Serif Display', serif;
+    font-size: 44px;
+    color: #fff;
+    margin-bottom: 8px;
+    line-height: 1;
+  }
+
+  .scenario-return {
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+
+  .scenario-return.neg { color: var(--accent3); }
+  .scenario-return.pos { color: var(--accent); }
+  .scenario-return.big { color: var(--accent4); }
+
+  .scenario-assumptions {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.8;
+    text-align: left;
+  }
+
+  .scenario-assumptions span {
+    display: block;
+    padding: 4px 0;
+    border-bottom: 1px solid var(--border);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+  }
+
+  /* ── RISKS ── */
+  .risk-table { width: 100%; border-collapse: collapse; }
+
+  .risk-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--text3);
+    padding: 10px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+  }
+
+  .risk-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    vertical-align: top;
+  }
+
+  .risk-table tr:hover td { background: var(--bg3); }
+
+  .risk-level {
+    display: inline-block;
+    padding: 3px 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+
+  .risk-level.high { background: rgba(232,93,74,.15); color: var(--accent3); }
+  .risk-level.med { background: rgba(247,201,72,.12); color: var(--accent2); }
+  .risk-level.low { background: rgba(0,212,170,.1); color: var(--accent); }
+
+  /* ── JPM COMMENTARY ── */
+  .jpm-header {
+    background: linear-gradient(90deg, var(--jpm-blue), #004bb5);
+    border: 1px solid #1a3a8a;
+    padding: 20px 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .jpm-logo {
+    font-family: 'DM Mono', monospace;
+    font-size: 20px;
+    font-weight: 500;
+    color: #fff;
+    letter-spacing: -.02em;
+    border-right: 1px solid rgba(255,255,255,.2);
+    padding-right: 16px;
+  }
+
+  .jpm-title {
+    font-size: 13px;
+    color: rgba(255,255,255,.7);
+  }
+
+  .jpm-title strong {
+    display: block;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .jpm-badge {
+    margin-left: auto;
+    background: var(--jpm-gold);
+    color: #000;
+    padding: 4px 12px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+
+  .jpm-comments-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .jpm-comment {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--jpm-gold);
+    padding: 24px 28px;
+    position: relative;
+    cursor: pointer;
+    transition: border-color .2s, background .2s;
+  }
+
+  .jpm-comment:hover {
+    background: var(--bg3);
+    border-left-color: var(--accent);
+  }
+
+  .jpm-comment-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 14px;
+  }
+
+  .jpm-number {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--jpm-gold);
+    background: rgba(200,164,21,.1);
+    border: 1px solid rgba(200,164,21,.25);
+    padding: 4px 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .jpm-comment-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    color: #fff;
+    line-height: 1.3;
+  }
+
+  .jpm-comment-body {
+    font-size: 13.5px;
+    color: var(--text2);
+    line-height: 1.8;
+    padding-left: 46px;
+  }
+
+  .jpm-comment-body strong {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .jpm-comment-body .insight-tag {
+    display: inline-block;
+    background: rgba(0,212,170,.08);
+    border: 1px solid rgba(0,212,170,.2);
+    padding: 2px 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: .08em;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+
+  .jpm-conclusion {
+    background: linear-gradient(135deg, rgba(0,48,135,.4), rgba(0,75,181,.15));
+    border: 1px solid rgba(0,48,135,.6);
+    padding: 32px;
+    margin-top: 24px;
+    position: relative;
+  }
+
+  .jpm-conclusion::before {
+    content: '"';
+    position: absolute;
+    top: 12px;
+    left: 24px;
+    font-family: 'DM Serif Display', serif;
+    font-size: 80px;
+    color: rgba(200,164,21,.2);
+    line-height: 1;
+  }
+
+  .jpm-conclusion-text {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: #e8ecf0;
+    line-height: 1.6;
+    padding-left: 20px;
+    margin-bottom: 16px;
+  }
+
+  .jpm-conclusion-attr {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--jpm-gold);
+    letter-spacing: .1em;
+    padding-left: 20px;
+  }
+
+  /* ── PROGRESS BARS ── */
+  .progress-row {
+    margin-bottom: 16px;
+  }
+
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    font-size: 12px;
+  }
+
+  .progress-label .key { color: var(--text2); }
+  .progress-label .val { font-family: 'DM Mono', monospace; color: var(--text); }
+
+  .progress-track {
+    height: 6px;
+    background: var(--border);
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 1.2s cubic-bezier(.16,1,.3,1);
+  }
+
+  .progress-fill.animated { transform: scaleX(1); }
+
+  /* ── FLYWHEEL ── */
+  .flywheel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    position: relative;
+  }
+
+  .flywheel-center {
+    width: 100px;
+    height: 100px;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    text-align: center;
+    color: var(--accent);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: pulse-border 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse-border {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(0,212,170,.3); }
+    50% { box-shadow: 0 0 0 16px rgba(0,212,170,0); }
+  }
+
+  .flywheel-items {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    width: 100%;
+    max-width: 640px;
+  }
+
+  .fw-item {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    padding: 18px 20px;
+    position: relative;
+  }
+
+  .fw-item::before {
+    content: attr(data-step);
+    position: absolute;
+    top: -10px;
+    left: 16px;
+    background: var(--bg);
+    padding: 0 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: .1em;
+  }
+
+  .fw-item-title {
+    font-weight: 700;
+    font-size: 13px;
+    color: #fff;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+
+  .fw-item-body {
+    font-size: 12px;
+    color: var(--text2);
+  }
+
+  /* ── TIMELINE ── */
+  .timeline {
+    position: relative;
+    padding-left: 32px;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--border);
+  }
+
+  .tl-item {
+    position: relative;
+    margin-bottom: 28px;
+  }
+
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: -26px;
+    top: 6px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px var(--bg), 0 0 0 4px rgba(0,212,170,.3);
+  }
+
+  .tl-year {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: .1em;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+
+  .tl-title {
+    font-weight: 600;
+    font-size: 14px;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+
+  .tl-body { font-size: 13px; color: var(--text2); }
+
+  /* ── DIVIDER ── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 32px 0;
+  }
+
+  /* ── HIGHLIGHT BOX ── */
+  .highlight-box {
+    background: rgba(0,212,170,.05);
+    border: 1px solid rgba(0,212,170,.2);
+    padding: 20px 24px;
+    margin: 20px 0;
+  }
+
+  .highlight-box .title {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .15em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 40px 0;
+    border-top: 1px solid var(--border);
+    background: var(--bg2);
+  }
+
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .footer-note {
+    font-size: 11px;
+    color: var(--text3);
+    max-width: 500px;
+  }
+
+  .footer-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity .6s ease, transform .6s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── TOOLTIP ── */
+  .tooltip-wrap { position: relative; display: inline-block; }
+  .tooltip-wrap:hover .tooltip { display: block; }
+
+  .tooltip {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 8px 12px;
+    font-size: 12px;
+    color: var(--text2);
+    white-space: nowrap;
+    z-index: 200;
+    pointer-events: none;
+  }
+
+  /* NWC progress section */
+  .nwc-visual {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 2px;
+    background: var(--border);
+    margin-bottom: 12px;
+  }
+
+  .nwc-bar {
+    background: var(--bg2);
+    padding: 16px 12px;
+    text-align: center;
+    position: relative;
+  }
+
+  .nwc-bar::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--accent);
+    transition: height 1s ease;
+  }
+
+  .nwc-year {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    margin-bottom: 6px;
+  }
+
+  .nwc-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  .nwc-label { font-size: 10px; color: var(--text3); }
+
+  /* Scroll hint */
+  .scroll-hint {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    margin-top: 16px;
+    animation: bounce 2s ease infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(4px); }
+  }
+
+  /* Capex viz */
+  .capex-gauge {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: 120px;
+    margin-top: 16px;
+  }
+
+  .capex-bar-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+  }
+
+  .capex-bar-fill {
+    width: 100%;
+    background: var(--accent4);
+    transition: height 1s ease;
+    position: relative;
+  }
+
+  .capex-bar-fill.current { background: var(--accent); }
+  .capex-bar-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text3); }
+  .capex-bar-val { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text); }
+
+  /* Toggle */
+  .toggle-row {
+    display: flex;
+    gap: 0;
+    margin-bottom: 24px;
+  }
+
+  .toggle-btn {
+    padding: 8px 20px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    color: var(--text3);
+    transition: all .2s;
+  }
+
+  .toggle-btn.active {
+    background: rgba(0,212,170,.1);
+    color: var(--accent);
+    border-color: rgba(0,212,170,.3);
+  }
+
+  .toggle-panel { display: none; animation: fadeIn .3s ease; }
+  .toggle-panel.active { display: block; }
+
+  /* Key person card */
+  .person-card {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 2px;
+    background: var(--border);
+  }
+
+  @media (max-width: 600px) { .person-card { grid-template-columns: 1fr; } }
+
+  .person-left {
+    background: var(--bg2);
+    padding: 28px;
+    text-align: center;
+  }
+
+  .person-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--bg3);
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    font-size: 32px;
+  }
+
+  .person-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+
+  .person-role {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .person-stake {
+    font-family: 'DM Mono', monospace;
+    font-size: 32px;
+    color: var(--accent);
+  }
+
+  .person-stake-label {
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: 4px;
+  }
+
+  .person-right {
+    background: var(--bg2);
+    padding: 28px;
+  }
+
+  .person-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .pt-item {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .pt-year {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    min-width: 40px;
+  }
+
+  .pt-text {
+    font-size: 13px;
+    color: var(--text2);
+    flex: 1;
+  }
+
+  .pt-text strong { color: var(--text); }
+
+  /* Quote */
+  blockquote.ceo-quote {
+    border-left: 3px solid var(--accent);
+    padding: 16px 20px;
+    background: rgba(0,212,170,.04);
+    margin: 20px 0;
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 15px;
+    color: #cdd3dc;
+  }
+
+  blockquote.ceo-quote cite {
+    display: block;
+    margin-top: 8px;
+    font-family: 'DM Mono', monospace;
+    font-style: normal;
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: .1em;
+  }
+
+  .inline-stat {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 2px 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    vertical-align: middle;
+    color: var(--accent);
+  }
+
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- HEADER -->
+<!-- ════════════════════════════════════════════════════════ -->
+<header>
+  <div class="container">
+    <div class="ticker-bar">
+      <div class="ticker">$ERF.PA</div>
+      <div class="exchange">EURONEXT PARIS · LARGE CAP</div>
+      <div class="rating-badge">▲ OVERWEIGHT</div>
+    </div>
+    <h1>Eurofins Scientific<br><em>The Industrialization of Science</em></h1>
+    <div class="sub-headline">A deep-dive investment thesis on the world's largest bio-analysis platform — post FY2025 results, updated February 2026.</div>
+    <div class="key-metrics-row">
+      <div class="metric-cell">
+        <div class="label">Current Price</div>
+        <div class="value up">~€62</div>
+      </div>
+      <div class="metric-cell">
+        <div class="label">Entry (Dec '25)</div>
+        <div class="value">€58</div>
+      </div>
+      <div class="metric-cell">
+        <div class="label">Base Target</div>
+        <div class="value target">€130</div>
+      </div>
+      <div class="metric-cell">
+        <div class="label">FCF (FY25)</div>
+        <div class="value up">€876M</div>
+      </div>
+      <div class="metric-cell">
+        <div class="label">EBITDA Margin</div>
+        <div class="value warn">22.5%</div>
+      </div>
+      <div class="metric-cell">
+        <div class="label">Risk/Reward</div>
+        <div class="value up">1:13</div>
+      </div>
+    </div>
+    <div class="scroll-hint">
+      <span>↓</span>
+      <span>Scroll to explore</span>
+    </div>
+  </div>
+</header>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- NAV -->
+<!-- ════════════════════════════════════════════════════════ -->
+<nav>
+  <div class="container">
+    <div class="nav-inner">
+      <a href="#business" class="nav-link">Business</a>
+      <a href="#moat" class="nav-link">Moat</a>
+      <a href="#financials" class="nav-link">Financials</a>
+      <a href="#realestate" class="nav-link">Real Estate</a>
+      <a href="#management" class="nav-link">Management</a>
+      <a href="#valuation" class="nav-link">Valuation</a>
+      <a href="#risks" class="nav-link">Risks</a>
+      <a href="#jpm" class="nav-link">JPM Analysis</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- BUSINESS OVERVIEW -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section id="business">
+  <div class="container">
+    <div class="section-label">01 — Business Model</div>
+    <h2 class="section-title">What Does Eurofins Actually Do?</h2>
+    <p class="section-desc">The world's largest network of bio-analytical laboratories. Eurofins is the outsourced quality-control department for the global food, pharma, and healthcare industries — testing everything from tap water to cancer drugs.</p>
+
+    <p class="reveal" style="font-size:14px; color:var(--text2); margin-bottom:32px; max-width:740px;">Click a segment below to expand details.</p>
+
+    <div class="segments-grid">
+      <div class="segment-card" data-segment="food" data-color="food" onclick="showSegment('food')">
+        <div class="seg-pct food">41%</div>
+        <div class="seg-name">🌿 Food &amp; Environment</div>
+        <div class="seg-growth">€2,869M · +7.4% organic 2024</div>
+        <div style="margin-top:12px; font-size:12px; color:var(--text3);">Regulatory compliance testing. Non-discretionary demand. The thesis bedrock.</div>
+      </div>
+      <div class="segment-card" data-segment="pharma" data-color="pharma" onclick="showSegment('pharma')">
+        <div class="seg-pct pharma">30%</div>
+        <div class="seg-name">💊 BioPharma Services</div>
+        <div class="seg-growth">CRO / CDMO · +0.6% (recovering)</div>
+        <div style="margin-top:12px; font-size:12px; color:var(--text3);">The value-unlock segment. COVID hangover masking the biologics shift.</div>
+      </div>
+      <div class="segment-card" data-segment="diag" data-color="diag" onclick="showSegment('diag')">
+        <div class="seg-pct diag">29%</div>
+        <div class="seg-name">🏥 Clinical Diagnostics</div>
+        <div class="seg-growth">+4.3% organic 2024</div>
+        <div style="margin-top:12px; font-size:12px; color:var(--text3);">The cash cow. High-volume, industrial-scale patient testing.</div>
+      </div>
+    </div>
+
+    <!-- Segment Detail Panels -->
+    <div id="seg-food" class="segment-detail">
+      <div class="seg-detail-grid">
+        <div>
+          <div class="seg-detail-title" style="color:var(--accent);">Food &amp; Environment</div>
+          <p style="font-size:13px; color:var(--text2); margin-bottom:16px;">The regulatory compliance engine. Food manufacturers, water utilities, and governments cannot legally sell products without Eurofins' sign-off. This is not discretionary spending.</p>
+          <div class="seg-stat-row"><span class="key">Revenue (2024)</span><span class="val" style="color:var(--accent);">€2,869M</span></div>
+          <div class="seg-stat-row"><span class="key">Organic Growth</span><span class="val">+7.4%</span></div>
+          <div class="seg-stat-row"><span class="key">US Margin Expansion</span><span class="val" style="color:var(--accent);">+300 bps in 2024</span></div>
+          <div class="seg-stat-row"><span class="key">Europe share</span><span class="val">52%</span></div>
+          <div class="seg-stat-row"><span class="key">N. America share</span><span class="val">37%</span></div>
+          <div class="seg-stat-row"><span class="key">Asia share</span><span class="val">11%</span></div>
+        </div>
+        <div>
+          <div style="font-family:'DM Mono',monospace; font-size:11px; color:var(--text3); text-transform:uppercase; letter-spacing:.1em; margin-bottom:16px;">Key Growth Catalysts</div>
+          <div style="font-size:13px; color:var(--text2); line-height:1.8;">
+            <div style="padding:10px 0; border-bottom:1px solid var(--border);">🧪 <strong style="color:#fff;">PFAS Regulation</strong> — New limits at parts-per-trillion require instrumentation only Eurofins owns at scale</div>
+            <div style="padding:10px 0; border-bottom:1px solid var(--border);">🏭 <strong style="color:#fff;">Big Food Outsourcing</strong> — Multinationals closing internal legacy labs; genomic testing complexity demands specialist infrastructure</div>
+            <div style="padding:10px 0; border-bottom:1px solid var(--border);">💧 <strong style="color:#fff;">EU Wastewater Directive</strong> — New regulations on wastewater & asbestos act as automatic demand generators in 2025–2027</div>
+            <div style="padding:10px 0;">🌏 <strong style="color:#fff;">Asia Export Standards</strong> — Stricter global standards enable Eurofins to win contracts local competitors cannot match</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="seg-pharma" class="segment-detail">
+      <div class="seg-detail-grid">
+        <div>
+          <div class="seg-detail-title" style="color:var(--accent4);">BioPharma Services</div>
+          <p style="font-size:13px; color:var(--text2); margin-bottom:16px;">The misunderstood segment. Headline growth of +0.6% masks a strong core business (+6% in product testing) being dragged by COVID clinical trial wind-downs and ag-sector destocking. Both are temporary.</p>
+          <div class="seg-stat-row"><span class="key">Core BPT Growth</span><span class="val" style="color:var(--accent4);">+6%</span></div>
+          <div class="seg-stat-row"><span class="key">Overall 9M 2025</span><span class="val">+0.6%</span></div>
+          <div class="seg-stat-row"><span class="key">H2 2025 vs H2 2024</span><span class="val" style="color:var(--accent);">+2.0% (vs -0.9%)</span></div>
+          <div class="seg-stat-row"><span class="key">Headline drag</span><span class="val">Central Lab (COVID cliff)</span></div>
+          <div class="seg-stat-row"><span class="key">Recovery catalyst</span><span class="val">H2 2026 large contracts</span></div>
+        </div>
+        <div>
+          <div style="font-family:'DM Mono',monospace; font-size:11px; color:var(--text3); text-transform:uppercase; letter-spacing:.1em; margin-bottom:16px;">The Biologics Structural Shift</div>
+          <div style="font-size:13px; color:var(--text2); line-height:1.8;">
+            <div style="padding:10px 0; border-bottom:1px solid var(--border);">🔬 <strong style="color:#fff;">Small → Large Molecules</strong> — Pharma pipelines shifting from traditional chemistry to biologics and cell therapies</div>
+            <div style="padding:10px 0; border-bottom:1px solid var(--border);">📈 <strong style="color:#fff;">Higher wallet share per drug</strong> — Biologics are more unstable, requiring exponentially more testing at each development stage</div>
+            <div style="padding:10px 0; border-bottom:1px solid var(--border);">🏭 <strong style="color:#fff;">CDMO Canada — Double-digit growth</strong> — Manufacturing testing is stickier than research testing; recession-resistant</div>
+            <div style="padding:10px 0;">💉 <strong style="color:#fff;">M&A pipeline</strong> — Infinity Labs (micro) + Resilience CDMO acquisition covers full drug value chain</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="seg-diag" class="segment-detail">
+      <div class="seg-detail-grid">
+        <div>
+          <div class="seg-detail-title" style="color:var(--accent2);">Clinical Diagnostics</div>
+          <p style="font-size:13px; color:var(--text2); margin-bottom:16px;">High-volume clinical testing engine. Impacted by French reimbursement cuts but offsetting via volume growth. The SYNLAB Spain acquisition is a textbook operating leverage play.</p>
+          <div class="seg-stat-row"><span class="key">Organic Growth 2024</span><span class="val" style="color:var(--accent2);">+4.3%</span></div>
+          <div class="seg-stat-row"><span class="key">Organic Growth 9M 2025</span><span class="val">+2.0%</span></div>
+          <div class="seg-stat-row"><span class="key">New Blood Collection Points</span><span class="val">+32 in 2025</span></div>
+          <div class="seg-stat-row"><span class="key">France price stabilized</span><span class="val">2026–2027 agreement</span></div>
+          <div class="seg-stat-row"><span class="key">Short-term margin dilution</span><span class="val">–60 bps (SYNLAB)</span></div>
+        </div>
+        <div>
+          <div style="font-family:'DM Mono',monospace; font-size:11px; color:var(--text3); text-transform:uppercase; letter-spacing:.1em; margin-bottom:16px;">Geographic Strategy</div>
+          <div style="font-size:13px; color:var(--text2); line-height:1.8;">
+            <div style="padding:10px 0; border-bottom:1px solid var(--border);">🇪🇺 <strong style="color:#fff;">Europe (60-65%)</strong> — Consolidation play in fragmented market. Distressed assets acquired cheap, migrated into high-utilization mega-labs</div>
+            <div style="padding:10px 0; border-bottom:1px solid var(--border);">🇺🇸 <strong style="color:#fff;">US (25-30%)</strong> — Avoids Quest/LabCorp price war; targets transplant genomics &amp; dialysis niches where expertise > price</div>
+            <div style="padding:10px 0;">🌏 <strong style="color:#fff;">Asia (5-10%)</strong> — NIPT (prenatal testing) demographic tailwind. Vietnam &amp; Japan growing middle-class spending on child health</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- MOAT -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section id="moat">
+  <div class="container">
+    <div class="section-label">02 — Competitive Moat</div>
+    <h2 class="section-title">Three Moats You Cannot Buy</h2>
+    <p class="section-desc">Capital alone cannot replicate what Eurofins has built over 35 years. The barrier isn't hardware — it's time, density, and data.</p>
+
+    <div class="moat-grid reveal">
+      <div class="moat-card">
+        <div class="moat-icon">⚙️</div>
+        <div class="moat-title">Utilization Rate Advantage</div>
+        <div class="moat-body">Local labs run at ~30% capacity. Eurofins' Hub & Spoke model funnels samples from thousands of satellites to central hubs, running machines 24/7. <strong style="color:var(--text);">Cost-per-test is structurally lower than any regional competitor</strong> — they can match market pricing and still earn healthy margins while small labs struggle to break even.</div>
+      </div>
+      <div class="moat-card">
+        <div class="moat-icon">🧬</div>
+        <div class="moat-title">200,000 Method Library</div>
+        <div class="moat-body">35 years of analytical methods in a proprietary archive. When a new contaminant or pathogen emerges, competitors need months to validate a new test. <strong style="color:var(--text);">Eurofins searches their database, adapts an existing method, and deploys in days.</strong> Speed you cannot buy — only time can create it.</div>
+      </div>
+      <div class="moat-card">
+        <div class="moat-icon">🔗</div>
+        <div class="moat-title">LIMS Integration Lock-in</div>
+        <div class="moat-body">Their lab information management system (eLIMS-NG) plugs directly into client ERP via API. Multinational clients need standardized data across 50 countries in one click. <strong style="color:var(--text);">Once embedded, switching means re-engineering the entire supply chain QC workflow.</strong> The switching cost is operational, not just financial.</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="highlight-box reveal">
+      <div class="title">🏆 Case Study: Fipronil Crisis</div>
+      <p style="font-size:13px; color:var(--text2);">When European egg contamination spiked demand 1,000% overnight, local labs hit capacity within hours. Eurofins airlifted samples from Belgium to Germany and France. Competitors showed 2-week backlogs. <strong style="color:var(--text);">Eurofins maintained turnaround, captured share, and charged premium pricing.</strong> The network's value increases precisely when the system is under stress — the inverse of commodity services.</p>
+    </div>
+
+    <!-- Hub & Spoke visual -->
+    <div class="divider"></div>
+    <div style="font-family:'DM Mono',monospace; font-size:11px; color:var(--text3); text-transform:uppercase; letter-spacing:.12em; margin-bottom:24px;">Hub &amp; Spoke — The Cost Architecture</div>
+    <div class="flywheel-items reveal">
+      <div class="fw-item" data-step="SPOKE">
+        <div class="fw-item-title">Satellite Collection Points</div>
+        <div class="fw-item-body">Local proximity to client. Rapid sample intake. Handles urgent/simple tests. Primary function: preserve biological sample integrity during transit window.</div>
+      </div>
+      <div class="fw-item" data-step="HUB">
+        <div class="fw-item-title">Central Processing Hubs</div>
+        <div class="fw-item-body">High-automation, 24/7 throughput. Advanced instrumentation at scale. Processes consolidated volume from hundreds of spokes at industrial unit economics.</div>
+      </div>
+      <div class="fw-item" data-step="RESULT">
+        <div class="fw-item-title">Margin Advantage</div>
+        <div class="fw-item-body">Fixed costs spread over enormous volume. Cost-per-test falls as throughput grows. New volume is nearly pure incremental margin — the operating leverage flywheel.</div>
+      </div>
+      <div class="fw-item" data-step="BARRIER">
+        <div class="fw-item-title">Network Density Moat</div>
+        <div class="fw-item-body">Sample degradation is a physical barrier. You need a lab within hours of collection. No competitor has the geographic density to serve multinationals across 60+ countries.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- FINANCIALS -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section id="financials">
+  <div class="container">
+    <div class="section-label">03 — Financial Inflection</div>
+    <h2 class="section-title">The Crocodile Mouth Opens</h2>
+    <p class="section-desc">EBITDA rising. CapEx falling. The space between is Free Cash Flow — and it's widening fast.</p>
+
+    <div class="croc-mouth reveal">
+      <div class="chart-title">Free Cash Flow Expansion: 2022–2027E</div>
+      <div class="chart-subtitle" style="color:var(--text2); font-size:13px; margin-bottom:24px;">Upper jaw = Adjusted EBITDA · Lower jaw = Net CapEx · The gap = FCF generation</div>
+      <div style="position:relative; height:300px;">
+        <canvas id="crocChart"></canvas>
+      </div>
+      <div style="display:flex; gap:24px; margin-top:20px; flex-wrap:wrap;">
+        <div style="display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text2);"><div style="width:20px; height:3px; background:var(--accent);"></div>EBITDA</div>
+        <div style="display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text2);"><div style="width:20px; height:3px; background:var(--accent4);"></div>Net CapEx</div>
+        <div style="display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text2);"><div style="width:20px; height:6px; background:rgba(0,212,170,.15);"></div>FCF Zone</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="charts-row reveal">
+      <!-- NWC Improvement -->
+      <div class="chart-box">
+        <div class="chart-title">Working Capital Efficiency</div>
+        <div class="chart-subtitle">NWC as % of Revenue — 6-Year Compression</div>
+        <div style="display:flex; align-items:flex-end; gap:8px; height:160px; margin-top:16px;" id="nwcBars">
+          <!-- Bars drawn by JS -->
+        </div>
+        <div style="margin-top:16px; font-size:12px; color:var(--text2);">€142M unlocked in 3 years without selling a single extra test. NWC went from 5.1% → 2.7%.</div>
+      </div>
+
+      <!-- CapEx Journey -->
+      <div class="chart-box">
+        <div class="chart-title">CapEx Intensity Trend</div>
+        <div class="chart-subtitle">Net Operating CapEx as % of Revenue</div>
+        <div style="position:relative; height:160px; margin-top:16px;">
+          <canvas id="capexChart"></canvas>
+        </div>
+        <div style="margin-top:16px; font-size:12px; color:var(--text2);">Peak investment clearly behind us. Management confirmed 2-3% maintenance CapEx long-term.</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Margin Analysis -->
+    <div style="font-family:'DM Mono',monospace; font-size:11px; color:var(--text3); text-transform:uppercase; letter-spacing:.12em; margin-bottom:24px;">Margin Architecture — Mature vs. Start-up Labs</div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:2px; background:var(--border); margin-bottom:24px;" class="reveal">
+      <div style="background:var(--bg2); padding:28px;">
+        <div style="font-family:'DM Mono',monospace; font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:.1em; margin-bottom:12px;">Mature Labs (93% of revenue)</div>
+        <div style="font-family:'DM Serif Display',serif; font-size:48px; color:var(--accent); line-height:1;">23.7%</div>
+        <div style="font-size:13px; color:var(--text2); margin-top:8px;">Reported EBITDA margin for established labs in FY2025. <strong style="color:var(--text);">North America already at 27.9%.</strong> This is the true earning power of the business.</div>
+      </div>
+      <div style="background:var(--bg2); padding:28px;">
+        <div style="font-family:'DM Mono',monospace; font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:.1em; margin-bottom:12px;">Group Reported (inc. start-ups)</div>
+        <div style="font-family:'DM Serif Display',serif; font-size:48px; color:var(--accent2); line-height:1;">22.5%</div>
+        <div style="font-size:13px; color:var(--text2); margin-top:8px;">Current group blended margin. The 1.2% gap is the "J-curve tax" on recently-opened labs. As SYNLAB integration matures, group converges toward <strong style="color:var(--text);">24%+ target.</strong></div>
+      </div>
+    </div>
+
+    <!-- Organic growth acceleration -->
+    <div class="chart-box reveal">
+      <div class="chart-title">Organic Growth Sequential Acceleration (2025)</div>
+      <div class="chart-subtitle">The thesis trajectory in numbers — Q4 momentum building toward 6.5% target</div>
+      <div style="position:relative; height:180px; margin-top:16px;">
+        <canvas id="growthChart"></canvas>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- REAL ESTATE -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section id="realestate">
+  <div class="container">
+    <div class="section-label">04 — Real Estate Strategy</div>
+    <h2 class="section-title">Hidden Value in the Balance Sheet</h2>
+    <p class="section-desc">Eurofins paid €443M for lab buildings worth ~€1B at replacement cost. This transaction did three things simultaneously: resolved a governance concern, generated an 8.1% implicit yield, and hedged future inflation.</p>
+
+    <div class="re-grid reveal">
+      <div class="re-cell">
+        <div class="big">€443M</div>
+        <div class="title">Price Paid (CBRE Appraised)</div>
+        <div class="body">Independently valued by CBRE and JLL. 95.6% of minority shareholders approved at AGM — the smartest institutional money in Europe signed off.</div>
+      </div>
+      <div class="re-cell">
+        <div class="big">~€1B</div>
+        <div class="title">Replacement Cost Estimate</div>
+        <div class="body">Management estimates building equivalent high-spec bio-lab facilities from scratch today would cost up to €1 billion. Acquired at ~44% of replacement value.</div>
+      </div>
+      <div class="re-cell">
+        <div class="big" style="color:var(--accent);">8.1%</div>
+        <div class="title">Implied Yield on Cost</div>
+        <div class="body">€36M in annual rent eliminated. On €443M purchase price = 8.1% return. vs. cost of debt ~3.5-4%. Immediately accretive to equity holders.</div>
+      </div>
+      <div class="re-cell">
+        <div class="big" style="color:var(--accent4);">50%</div>
+        <div class="title">Network Now Owned</div>
+        <div class="body">Up from 240k sqm (2018) to 905k sqm. Owning eliminates landlord risk, protects leasehold improvements, and removes costly reaccreditation risk from moves.</div>
+      </div>
+    </div>
+
+    <div class="highlight-box reveal">
+      <div class="title">💡 Governance Catalyst</div>
+      <p style="font-size:13px; color:var(--text2);">The "black cloud" of related-party transactions — Gilles Martin personally collecting rent from Eurofins — has been resolved. By selling private real estate to the company at independently validated fair market value, Martin has removed the single biggest ESG-driven institutional investor deterrent. <strong style="color:var(--text);">This potentially expands the eligible shareholder base to include strict ESG-mandated funds that were previously prohibited from owning ERF.PA.</strong> Multiple expansion follows.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- MANAGEMENT -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section id="management">
+  <div class="container">
+    <div class="section-label">05 — Management &amp; Capital Allocation</div>
+    <h2 class="section-title">Skin in the Game: Gilles Martin</h2>
+    <p class="section-desc">Investing in Eurofins is largely a bet on its founder. At 33% ownership, his financial outcome is identical to yours — perhaps the most important alignment mechanism in investing.</p>
+
+    <div class="person-card reveal">
+      <div class="person-left">
+        <div class="person-avatar">👤</div>
+        <div class="person-name">Gilles Martin</div>
+        <div class="person-role">Founder &amp; CEO · Est. 1987</div>
+        <div class="divider"></div>
+        <div class="person-stake">~33%</div>
+        <div class="person-stake-label">Direct ownership stake</div>
+      </div>
+      <div class="person-right">
+        <div class="person-timeline">
+          <div class="pt-item">
+            <div class="pt-year">2021–25</div>
+            <div class="pt-text"><strong>€888M returned to shareholders</strong> via buybacks — a founder who spent 30 years building via M&A now says buying his own stock is the highest-IRR use of capital available.</div>
+          </div>
+          <div class="pt-item">
+            <div class="pt-year">2025</div>
+            <div class="pt-text"><strong>€541M in buybacks in a single year.</strong> 40 M&A deals for only €261M. The capital allocation pivot is explicit and data-backed.</div>
+          </div>
+          <div class="pt-item">
+            <div class="pt-year">H2 2025</div>
+            <div class="pt-text"><strong>Sold private real estate to Eurofins at fair market value.</strong> Eliminates €130M in lease liabilities. Removes related-party governance overhang that had weighed on the multiple for years.</div>
+          </div>
+          <div class="pt-item">
+            <div class="pt-year">2022–27</div>
+            <div class="pt-text"><strong>€2B+ digitalization investment</strong> in eLIMS-NG. No competitor has committed remotely comparable capex to IT modernization. This lead compounds over time.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <blockquote class="ceo-quote reveal" style="margin-top:24px;">
+      "Buying back shares is a better investment than any M&A or building... As long as this unjustified discount lasts... it is the most absurd valuation in recent history."
+      <cite>— Gilles Martin, CEO, Q4 2025 Call</cite>
+    </blockquote>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- VALUATION -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section id="valuation">
+  <div class="container">
+    <div class="section-label">06 — Valuation &amp; Scenarios (2029 Outlook)</div>
+    <h2 class="section-title">Stress-Testing the Thesis</h2>
+    <p class="section-desc">Bear case limits downside to ~9%. Base case is a double. The asymmetry is the opportunity. Base entry price: €58 (Dec 2025).</p>
+
+    <div class="val-scenarios reveal">
+      <div class="scenario">
+        <div class="scenario-label bear">Bear Case</div>
+        <div class="scenario-price">€52</div>
+        <div class="scenario-return neg">–9% from entry</div>
+        <div class="scenario-assumptions">
+          <span>EBITDA Margin: 19%</span>
+          <span>Growth CAGR: 3.5%</span>
+          <span>Multiple: 8.5x EV/EBITDA</span>
+          <span>Assumption: Pricing power lost, margins structurally impaired</span>
+        </div>
+      </div>
+      <div class="scenario base">
+        <div class="scenario-label base-l">★ Base Case</div>
+        <div class="scenario-price">€130</div>
+        <div class="scenario-return pos">+124% from entry</div>
+        <div class="scenario-assumptions">
+          <span>EBITDA Margin: 21.5%</span>
+          <span>Growth CAGR: 5.5%</span>
+          <span>FCF (2029): €950M</span>
+          <span>Multiple: 14-15x EV/EBITDA</span>
+          <span>Europe converges to US margin model</span>
+        </div>
+      </div>
+      <div class="scenario">
+        <div class="scenario-label bull">Bull Case</div>
+        <div class="scenario-price">€180+</div>
+        <div class="scenario-return big">+210% from entry</div>
+        <div class="scenario-assumptions">
+          <span>EBITDA Margin: 24%+</span>
+          <span>Growth CAGR: 7%</span>
+          <span>Multiple re-rating: 17-18x</span>
+          <span>BioPharma recovery accelerates H1 2026</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:var(--bg2); border:1px solid var(--border); padding:24px; margin-top:0;" class="reveal">
+      <div style="font-family:'DM Mono',monospace; font-size:11px; color:var(--text3); text-transform:uppercase; letter-spacing:.12em; margin-bottom:16px;">Risk/Reward Asymmetry</div>
+      <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+        <div style="flex:1; min-width:200px;">
+          <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text2); margin-bottom:6px;"><span>Max Downside</span><span style="font-family:'DM Mono',monospace; color:var(--accent3);">–9% (€52)</span></div>
+          <div class="progress-track"><div class="progress-fill" data-width="0.07" style="background:var(--accent3);"></div></div>
+        </div>
+        <div style="font-family:'DM Mono',monospace; color:var(--text3); font-size:20px;">vs</div>
+        <div style="flex:1; min-width:200px;">
+          <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text2); margin-bottom:6px;"><span>Base Upside</span><span style="font-family:'DM Mono',monospace; color:var(--accent);">+124% (€130)</span></div>
+          <div class="progress-track"><div class="progress-fill" data-width="1"></div></div>
+        </div>
+      </div>
+      <div style="margin-top:16px; font-size:13px; color:var(--text2);">Asymmetric setup: <strong style="color:var(--accent); font-family:'DM Mono',monospace;">1:13 risk/reward ratio</strong>. Even with delays baked in, bear case protected by real asset value and FCF generation.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- RISKS -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section id="risks">
+  <div class="container">
+    <div class="section-label">07 — Risk Matrix</div>
+    <h2 class="section-title">The Honest Assessment</h2>
+    <p class="section-desc">No investment thesis is complete without a clear-eyed view of the downside. These are the risks that could impair the thesis — ranked by materiality.</p>
+
+    <table class="risk-table reveal">
+      <thead>
+        <tr>
+          <th>Risk</th>
+          <th>Severity</th>
+          <th>Thesis Impact</th>
+          <th>Mitigant</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Key Man Risk</strong><br><span style="color:var(--text3); font-size:12px;">No succession plan for Gilles Martin</span></td>
+          <td><span class="risk-level high">High</span></td>
+          <td style="color:var(--text2); font-size:12px;">Capital allocation re-rating, strategic uncertainty</td>
+          <td style="color:var(--text2); font-size:12px;">Decentralized structure provides operational continuity; 33% stake aligns successor incentives</td>
+        </tr>
+        <tr>
+          <td><strong>Corporate Complexity</strong><br><span style="color:var(--text3); font-size:12px;">~900 legal entities, governance opacity</span></td>
+          <td><span class="risk-level med">Medium</span></td>
+          <td style="color:var(--text2); font-size:12px;">Persistent short-seller target; ESG exclusion risk</td>
+          <td style="color:var(--text2); font-size:12px;">Related-party transactions now resolved; governance trajectory improving</td>
+        </tr>
+        <tr>
+          <td><strong>eLIMS-NG IT Execution Risk</strong><br><span style="color:var(--text3); font-size:12px;">Rollout delay pushes FCF inflection</span></td>
+          <td><span class="risk-level med">Medium</span></td>
+          <td style="color:var(--text2); font-size:12px;">Bull case delayed, multiple compression risk</td>
+          <td style="color:var(--text2); font-size:12px;">North America already live at 27.9% margins — proof of concept complete</td>
+        </tr>
+        <tr>
+          <td><strong>BioPharma Recovery Delay</strong><br><span style="color:var(--text3); font-size:12px;">VC drought extends, large contracts slip</span></td>
+          <td><span class="risk-level med">Medium</span></td>
+          <td style="color:var(--text2); font-size:12px;">5.5% vs 6.5% growth CAGR; already baked into base case</td>
+          <td style="color:var(--text2); font-size:12px;">H2 2025 acceleration data confirms turning point. Core BPT +6% healthy</td>
+        </tr>
+        <tr>
+          <td><strong>French Tariff Cuts</strong><br><span style="color:var(--text3); font-size:12px;">Government reimbursement pressure</span></td>
+          <td><span class="risk-level low">Low</span></td>
+          <td style="color:var(--text2); font-size:12px;">Margin dilution offset by volume strategy and new BCPs</td>
+          <td style="color:var(--text2); font-size:12px;">2026–2027 regulatory agreement provides price stability</td>
+        </tr>
+        <tr>
+          <td><strong>Leverage at 2.2x Net Debt/EBITDA</strong><br><span style="color:var(--text3); font-size:12px;">Real estate acquisition raised debt</span></td>
+          <td><span class="risk-level low">Low</span></td>
+          <td style="color:var(--text2); font-size:12px;">Within 1.5–2.5x target range; debt is asset-swap not operational burn</td>
+          <td style="color:var(--text2); font-size:12px;">€876M FCF fully self-finances CapEx and bolt-on M&A; deleveraging from here</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- JPM ANALYSIS -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section id="jpm">
+  <div class="container">
+    <div class="section-label">08 — Senior Analyst Commentary</div>
+    <h2 class="section-title">What the Street Is Missing</h2>
+    <p class="section-desc">Six observations that go beyond the surface-level reading of the thesis — the non-obvious connections that change the risk/reward calculus.</p>
+
+    <div class="jpm-header reveal">
+      <div class="jpm-logo">JPMorgan</div>
+      <div class="jpm-title">
+        <strong>European Specialty Industrials &amp; Life Sciences</strong>
+        Senior Equity Analyst — 15 Years Coverage
+      </div>
+      <div class="jpm-badge">Internal View</div>
+    </div>
+
+    <div class="jpm-comments-grid">
+
+      <!-- Comment 1 -->
+      <div class="jpm-comment reveal">
+        <div class="jpm-comment-header">
+          <div class="jpm-number">01/06</div>
+          <div class="jpm-comment-title">The Governance Discount Unwind Is a Double Catalyst Nobody Is Pricing</div>
+        </div>
+        <div class="jpm-comment-body">
+          <span class="insight-tag">Non-Consensus</span>
+          The market reads the related-party resolution as a one-time governance cleanup. It isn't. <strong>It's a permanent expansion of the eligible investor universe.</strong> A significant cohort of European institutional capital — particularly pension funds and sovereign wealth allocators operating under strict ESG mandates — was structurally excluded from owning ERF.PA due to the related-party flag. That capital didn't underweight Eurofins; it held zero. Post-resolution, these funds can now initiate. We're not talking about sentiment improvement at the margin — we're talking about structural demand that hasn't yet touched the stock. The timing also matters: this coincides with Eurofins entering a FCF expansion phase, which is precisely when ESG-sensitive large-caps attract the most institutional inflows. The governance improvement and the FCF inflection are simultaneous. <strong>That combination is the kind of re-rating catalyst that typically works on a 12–18 month lag from the trigger event.</strong>
+        </div>
+      </div>
+
+      <!-- Comment 2 -->
+      <div class="jpm-comment reveal">
+        <div class="jpm-comment-header">
+          <div class="jpm-number">02/06</div>
+          <div class="jpm-comment-title">The US→Europe Margin Convergence Is an Underpriced Embedded Option Worth ~€30 per Share</div>
+        </div>
+        <div class="jpm-comment-body">
+          <span class="insight-tag">Valuation Insight</span>
+          North America runs at <strong>27.9% EBITDA margin</strong>. Europe runs at <strong>17.4%</strong>. Most analysts look at this and shrug — "different markets, different dynamics." But this misses the key structural insight: <strong>the US was in the same position as Europe three years ago.</strong> The US margin expansion is the consequence of completing exactly the same eLIMS-NG rollout and Hub & Spoke consolidation that Europe is currently implementing. Europe isn't structurally inferior — it's simply three years behind on the same technology curve. If European margins converge even 60% of the way toward the US model (to ~24%), and you apply a 14x EBITDA multiple, the incremental equity value is approximately €25–35 per share. <strong>This is not growth we need to conjure from thin air — it's operational efficiency already proven and live in the US division, now being replicated at scale across the EU.</strong> The market is not paying for this option.
+        </div>
+      </div>
+
+      <!-- Comment 3 -->
+      <div class="jpm-comment reveal">
+        <div class="jpm-comment-header">
+          <div class="jpm-number">03/06</div>
+          <div class="jpm-comment-title">The NWC Compression Signals a Cultural Shift That Historically Precedes Re-Rating Cycles</div>
+        </div>
+        <div class="jpm-comment-body">
+          <span class="insight-tag">Management Quality Signal</span>
+          Working capital going from 5.1% to 2.7% of sales over three years is not a financial engineering trick — <strong>it's the clearest indicator that management has shifted from a growth-at-any-cost mentality to a capital efficiency mentality.</strong> At JPM we've tracked this pattern across compounders in the European industrial space: the moment a management team starts getting serious about cash conversion, it tends to be durable. Martin openly admits they were paying suppliers "way too fast, just to be helpful." That kind of candor, combined with measurable execution, tells you the 2024–2025 cleaning phase is real and structural. Here's the non-obvious connection: <strong>NWC compression at this scale (€142M released in 3 years) is typically a leading indicator of FCF surprise to the upside</strong>, not a one-time benefit. Once a management team internalizes cash discipline operationally, it becomes self-reinforcing. I'd put 60%+ probability on FCF beating the €950M base case by 2029.
+        </div>
+      </div>
+
+      <!-- Comment 4 -->
+      <div class="jpm-comment reveal">
+        <div class="jpm-comment-header">
+          <div class="jpm-number">04/06</div>
+          <div class="jpm-comment-title">BioPharma's "COVID Cliff" Is Masking a Denominator Problem That Inverts Into a Massive YoY Comp Flip in H2 2026</div>
+        </div>
+        <div class="jpm-comment-body">
+          <span class="insight-tag">Catalyst Timing</span>
+          Every sellside analyst who covers this stock knows BioPharma is under pressure. What they're not modeling correctly is the <strong>base effect inversion.</strong> The COVID-related clinical trial revenues didn't just stop — they peaked in H1 2024 and then dropped sharply into H2 2024 and H1 2025. This creates an increasingly easy comparison period. Management has confirmed large Central Lab and Bioanalysis contracts initiate in H2 2026. The math is simple: you're adding new contract revenue on top of a dramatically depressed base. <strong>The reported organic growth rate for BioPharma could swing from sub-2% in H1 2026 to potentially 8–12% in H2 2026 — on a segment that represents 30% of group revenues.</strong> This kind of segment-level acceleration, hitting simultaneously with the eLIMS-NG efficiency gains in Europe, is precisely the setup that causes consensus estimates to get revised materially upward. The stock typically moves before the analysts catch up.
+        </div>
+      </div>
+
+      <!-- Comment 5 -->
+      <div class="jpm-comment reveal">
+        <div class="jpm-comment-header">
+          <div class="jpm-number">05/06</div>
+          <div class="jpm-comment-title">The 900-Entity Corporate Structure Is Not a Risk — It's a Strategic Moat Against Hostile M&A</div>
+        </div>
+        <div class="jpm-comment-body">
+          <span class="insight-tag">Structure Analysis</span>
+          Short sellers correctly identify the 900 legal entities as an opacity risk. What they miss is that this same structure is <strong>nearly impossible to acquire, integrate, or replicate.</strong> Any strategic buyer looking at Eurofins as an M&A target would face a regulatory approval marathon across 60+ jurisdictions, an accreditation re-application process at hundreds of lab sites, and a tax efficiency unwind that would materially destroy the enterprise value they're trying to capture. <strong>Eurofins' structural complexity is a poison pill that doesn't need shareholder approval.</strong> Furthermore, the same structure enables significant operational tax efficiency that more "transparent" competitors simply cannot match at scale. The discount investors apply for complexity may actually be mis-categorized — they're penalizing what is simultaneously Eurofins' best antitakeover defense and its most durable competitive advantage. Martin built this deliberately over 35 years. I don't think the market gives him credit for the strategic intentionality.
+        </div>
+      </div>
+
+      <!-- Comment 6 -->
+      <div class="jpm-comment reveal">
+        <div class="jpm-comment-header">
+          <div class="jpm-number">06/06</div>
+          <div class="jpm-comment-title">A Founder Pivoting From Serial Acquirer to Share Repurchase Is the Single Most Honest Valuation Signal Available</div>
+        </div>
+        <div class="jpm-comment-body">
+          <span class="insight-tag">Capital Allocation Signal</span>
+          This deserves more attention than it gets. Gilles Martin spent three decades identifying and buying businesses. His entire career has been as a capital allocator in the private market for lab assets. He has 35 years of deal flow, relationships, and proprietary valuation knowledge in this sector. <strong>When someone with that background says "I can't find anything in the private market that beats buying my own stock," you should listen very carefully.</strong> This isn't a buyback because he has nothing to do with the cash. It's an explicit, data-driven statement that the public market is pricing Eurofins below the fair value of its private market equivalent. He deployed €541M in 2025 buybacks — at current prices, that's buying earnings at a sub-8x FCF multiple. For comparison, private lab assets trade at 12–15x in deal markets. <strong>The founder's own capital is the most sophisticated signal available that the stock is undervalued. The market has not resolved this arbitrage.</strong>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- JPM Conclusion -->
+    <div class="jpm-conclusion reveal">
+      <div class="jpm-conclusion-text">
+        The consensus view on Eurofins prices a structurally impaired, complex, governance-challenged business entering a permanent growth deceleration. The reality is a temporarily mis-priced inflection story: governance resolved, CapEx cycle ending, FCF accelerating, founder buying aggressively, and a 10-point margin expansion embedded in the EU/US convergence story. At €58–62, you own a €1B FCF business by 2029 at under 7x free cash. That's not a growth stock premium — that's an infrastructure valuation on a platform with compounding embedded options. The setup is unusually clean. Risk/reward is 1:13. The only rational reason not to be long is that you haven't done the work.
+      </div>
+      <div class="jpm-conclusion-attr">— JPM Senior Analyst, European Life Sciences Coverage · February 2026</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- FOOTER -->
+<!-- ════════════════════════════════════════════════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-note">
+        This infographic is for informational and educational purposes only. It does not constitute financial advice. All data sourced from publicly available company reports and the original investment thesis by Colubeat Investment Desk (colubeatid.substack.com). JPM analyst commentary is a creative analytical exercise, not an official JPMorgan research note.
+      </div>
+      <div class="footer-date">
+        EUROFINS · ERF.PA<br>
+        FY2025 Update · Feb 2026
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ─── Chart: Crocodile Mouth ──────────────────────────────────────────────────
+const crocCtx = document.getElementById('crocChart').getContext('2d');
+
+const years = ['2022', '2023', '2024', '2025', '2026E', '2027E'];
+const ebitda = [1520, 1540, 1590, 1640, 1750, 1920];
+const capex   = [490,  450,  365,  328,  310,  290];
+
+const gradient = crocCtx.createLinearGradient(0, 0, 0, 300);
+gradient.addColorStop(0, 'rgba(0,212,170,.12)');
+gradient.addColorStop(1, 'rgba(0,212,170,0)');
+
+new Chart(crocCtx, {
+  type: 'line',
+  data: {
+    labels: years,
+    datasets: [
+      {
+        label: 'EBITDA (€M)',
+        data: ebitda,
+        borderColor: '#00d4aa',
+        borderWidth: 2.5,
+        pointBackgroundColor: '#00d4aa',
+        pointRadius: 5,
+        tension: 0.3,
+        fill: false,
+      },
+      {
+        label: 'Net CapEx (€M)',
+        data: capex,
+        borderColor: '#5b8cff',
+        borderWidth: 2.5,
+        pointBackgroundColor: '#5b8cff',
+        pointRadius: 5,
+        tension: 0.3,
+        fill: {
+          target: 0,
+          above: 'rgba(0,212,170,0.06)',
+        },
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#13171f',
+        borderColor: '#1e2530',
+        borderWidth: 1,
+        titleColor: '#8a93a2',
+        bodyColor: '#e8ecf0',
+        callbacks: {
+          label: ctx => ` ${ctx.dataset.label}: €${ctx.raw}M`
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: { color: 'rgba(255,255,255,.04)' },
+        ticks: { color: '#555f6e', font: { family: 'DM Mono', size: 11 } }
+      },
+      y: {
+        grid: { color: 'rgba(255,255,255,.04)' },
+        ticks: { 
+          color: '#555f6e', 
+          font: { family: 'DM Mono', size: 11 },
+          callback: v => `€${v}M`
+        },
+        min: 200
+      }
+    }
+  }
+});
+
+// ─── Chart: CapEx Intensity ──────────────────────────────────────────────────
+const capexCtx = document.getElementById('capexChart').getContext('2d');
+new Chart(capexCtx, {
+  type: 'bar',
+  data: {
+    labels: ['2022', '2023', '2024', '2025', '2026E', '2027E'],
+    datasets: [{
+      data: [6.8, 6.0, 5.2, 4.5, 4.0, 3.5],
+      backgroundColor: (ctx) => {
+        const i = ctx.dataIndex;
+        if (i >= 4) return 'rgba(0,212,170,.25)';
+        if (i === 3) return 'rgba(0,212,170,.6)';
+        return 'rgba(91,140,255,.35)';
+      },
+      borderColor: (ctx) => {
+        const i = ctx.dataIndex;
+        if (i === 3) return '#00d4aa';
+        return 'transparent';
+      },
+      borderWidth: 2,
+      borderRadius: 2,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#13171f',
+        borderColor: '#1e2530',
+        borderWidth: 1,
+        bodyColor: '#e8ecf0',
+        callbacks: { label: ctx => ` ${ctx.raw}% of Revenue` }
+      }
+    },
+    scales: {
+      x: { grid: { display: false }, ticks: { color: '#555f6e', font: { family: 'DM Mono', size: 10 } } },
+      y: {
+        grid: { color: 'rgba(255,255,255,.04)' },
+        ticks: { color: '#555f6e', font: { family: 'DM Mono', size: 10 }, callback: v => v + '%' },
+        min: 0, max: 8
+      }
+    }
+  }
+});
+
+// ─── Chart: Organic Growth ───────────────────────────────────────────────────
+const growthCtx = document.getElementById('growthChart').getContext('2d');
+new Chart(growthCtx, {
+  type: 'bar',
+  data: {
+    labels: ['FY 2023', 'H1 2025', 'H2 2025', 'Q4 2025', '2026 Guidance', '2027 Target'],
+    datasets: [{
+      data: [2.1, 3.9, 4.4, 4.7, 5.5, 6.5],
+      backgroundColor: [
+        'rgba(91,140,255,.35)',
+        'rgba(91,140,255,.5)',
+        'rgba(0,212,170,.5)',
+        'rgba(0,212,170,.7)',
+        'rgba(0,212,170,.4)',
+        'rgba(247,201,72,.35)',
+      ],
+      borderColor: ['transparent','transparent','transparent','#00d4aa','transparent','rgba(247,201,72,.6)'],
+      borderWidth: 2,
+      borderRadius: 3,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#13171f',
+        borderColor: '#1e2530',
+        borderWidth: 1,
+        bodyColor: '#e8ecf0',
+        callbacks: { label: ctx => ` Organic Growth: ${ctx.raw}%` }
+      }
+    },
+    scales: {
+      x: { grid: { display: false }, ticks: { color: '#555f6e', font: { family: 'DM Mono', size: 10 } } },
+      y: {
+        grid: { color: 'rgba(255,255,255,.04)' },
+        ticks: { color: '#555f6e', font: { family: 'DM Mono', size: 10 }, callback: v => v + '%' },
+        min: 0, max: 8
+      }
+    }
+  }
+});
+
+// ─── NWC Bars ────────────────────────────────────────────────────────────────
+const nwcData = [
+  { year: '2019', val: 5.3 },
+  { year: '2022', val: 5.1 },
+  { year: '2023', val: 4.5 },
+  { year: '2024', val: 3.8 },
+  { year: '2025', val: 2.7 },
+];
+
+const nwcWrap = document.getElementById('nwcBars');
+const maxNwc = 5.5;
+
+nwcData.forEach((d, i) => {
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'display:flex; flex-direction:column-reverse; align-items:center; flex:1; height:100%;';
+
+  const bar = document.createElement('div');
+  const heightPct = (d.val / maxNwc) * 100;
+  const isLatest = i === nwcData.length - 1;
+  bar.style.cssText = `width:100%; background:${isLatest ? '#00d4aa' : 'rgba(91,140,255,.35)'}; transition:height 1.2s ease; height:0;`;
+  bar.dataset.target = heightPct;
+
+  const valLabel = document.createElement('div');
+  valLabel.style.cssText = `font-family:'DM Mono',monospace; font-size:${isLatest ? '16px' : '13px'}; color:${isLatest ? '#00d4aa' : '#e8ecf0'}; margin-bottom:4px; text-align:center;`;
+  valLabel.textContent = d.val + '%';
+
+  const yearLabel = document.createElement('div');
+  yearLabel.style.cssText = "font-family:'DM Mono',monospace; font-size:9px; color:var(--text3); text-align:center; margin-top:6px;";
+  yearLabel.textContent = d.year;
+
+  wrap.appendChild(valLabel);
+  wrap.appendChild(bar);
+  wrap.appendChild(yearLabel);
+  nwcWrap.appendChild(wrap);
+});
+
+// ─── Segment Toggle ──────────────────────────────────────────────────────────
+function showSegment(id) {
+  const panels = ['food', 'pharma', 'diag'];
+  const cards = document.querySelectorAll('.segment-card');
+
+  panels.forEach(p => {
+    const panel = document.getElementById('seg-' + p);
+    const card = document.querySelector(`[data-segment="${p}"]`);
+    if (p === id) {
+      const alreadyOpen = panel.classList.contains('visible');
+      panel.classList.toggle('visible');
+      card.classList.toggle('active', !alreadyOpen);
+    } else {
+      panel.classList.remove('visible');
+      card.classList.remove('active');
+    }
+  });
+}
+
+// ─── Scroll Animations ───────────────────────────────────────────────────────
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(el => {
+    if (el.isIntersecting) {
+      el.target.classList.add('visible');
+
+      // Animate NWC bars
+      if (el.target.contains(nwcWrap) || el.target.id === 'financials') {
+        setTimeout(() => {
+          document.querySelectorAll('#nwcBars div > div:nth-child(2)').forEach(bar => {
+            bar.style.height = bar.dataset.target + '%';
+          });
+        }, 200);
+      }
+
+      // Animate progress bars
+      el.target.querySelectorAll('.progress-fill').forEach(fill => {
+        setTimeout(() => fill.classList.add('animated'), 300);
+      });
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Also trigger NWC on financials section
+const finSection = document.getElementById('financials');
+if (finSection) {
+  const finObs = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      setTimeout(() => {
+        document.querySelectorAll('#nwcBars > div > div:nth-child(2)').forEach(bar => {
+          if (bar.dataset.target) bar.style.height = bar.dataset.target + '%';
+        });
+      }, 400);
+    }
+  }, { threshold: 0.2 });
+  finObs.observe(finSection);
+}
+
+// ─── Active Nav ──────────────────────────────────────────────────────────────
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-link');
+
+const navObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const active = document.querySelector(`.nav-link[href="#${entry.target.id}"]`);
+      if (active) {
+        active.classList.add('active');
+        active.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+    }
+  });
+}, { threshold: 0.4 });
+
+sections.forEach(s => navObs.observe(s));
+</script>
+</body>
+</html>
