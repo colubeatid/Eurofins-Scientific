@@ -1,0 +1,3661 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eurofins Scientific — Investment Thesis · Colubeat</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Barlow+Condensed:wght@300;400;500;600;700&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap"
+    rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --cream: #F5F2ED;
+      --offwhite: #FAF8F4;
+      --charcoal: #181818;
+      --dark: #0E0E0E;
+      --darkgray: #242424;
+      --midgray: #cecccc;
+      --gray: #787878;
+      --lightgray: #ADADAD;
+      --border: #2E2E2E;
+      --cream-border: #E0DAD0;
+      --gold: #15c84e;
+      --gold-light: rgba(238, 245, 21, 0.828);
+      --gold-dim: rgba(45, 236, 15, 0.15);
+      --green: #2D6A4F;
+      --green-light: #40916C;
+      --red: #9B2335;
+      --slate: #2B3A52;
+      --slide-h: 100vh;
+      --font-og: 'Barlow Condensed', sans-serif;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-snap-type: y mandatory;
+      overflow-y: scroll;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      background: var(--charcoal);
+      color: var(--cream);
+      cursor: default;
+    }
+
+    /* ── GRAIN OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: .4;
+    }
+
+    /* ── PROGRESS ── */
+    #progress-nav {
+      position: fixed;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 500;
+    }
+
+    .prog-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(200, 164, 21, .25);
+      border: 1px solid rgba(200, 164, 21, .4);
+      cursor: pointer;
+      transition: all .3s ease;
+    }
+
+    .prog-dot.active {
+      background: var(--gold);
+      transform: scale(1.4);
+      border-color: var(--gold);
+    }
+
+    /* ── SLIDE COUNTER ── */
+    #slide-counter {
+      position: fixed;
+      top: 22px;
+      right: 40px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: .15em;
+      color: rgba(238, 245, 21, 0.828);
+      z-index: 500;
+    }
+
+    /* ── LOGO ── */
+    #logo {
+      position: fixed;
+      top: 22px;
+      left: 36px;
+      font-family: 'Zilla Slab', serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      color: rgba(238, 245, 21, 0.828);
+      z-index: 500;
+      text-transform: uppercase;
+    }
+
+    /* ── SECTIONS ── */
+    .slide {
+      height: 100vh;
+      scroll-snap-align: start;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+
+    /* ── UTILITY ── */
+    .label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+    }
+
+    .serif {
+      font-family: 'Zilla Slab', serif;
+    }
+
+    .condensed {
+      font-family: 'Barlow Condensed', sans-serif;
+    }
+
+    .gold {
+      color: var(--gold);
+    }
+
+    .gold-bar {
+      display: block;
+      width: 40px;
+      height: 3px;
+      background: var(--gold);
+      margin: 16px 0;
+    }
+
+    /* reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+
+    .reveal.in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal.d1 {
+      transition-delay: .1s;
+    }
+
+    .reveal.d2 {
+      transition-delay: .2s;
+    }
+
+    .reveal.d3 {
+      transition-delay: .3s;
+    }
+
+    .reveal.d4 {
+      transition-delay: .4s;
+    }
+
+    .reveal.d5 {
+      transition-delay: .5s;
+    }
+
+    .reveal.d6 {
+      transition-delay: .6s;
+    }
+
+    /* ══════════════════════════════════════════
+   SLIDE 1 — COVER
+══════════════════════════════════════════ */
+    #s1 {
+      background: var(--dark);
+      justify-content: flex-end;
+    }
+
+    .cover-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 70% 40%, rgba(43, 58, 82, .5) 0%, transparent 70%),
+        repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(255, 255, 255, .012) 59px, rgba(255, 255, 255, .012) 60px),
+        repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(255, 255, 255, .012) 59px, rgba(255, 255, 255, .012) 60px),
+        var(--dark);
+    }
+
+    .cover-gold-bar {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 5px;
+      background: var(--gold);
+    }
+
+    .cover-issue {
+      position: relative;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 200px;
+      gap: 20px;
+      padding: 25px;
+    }
+
+    @media(max-width:520px) {
+      .cover-issue {
+        flex-direction: column;
+        margin-bottom: 50px;
+      }
+    }
+
+    .cover-ticker {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: .18em;
+      color: rgba(253, 253, 14, 0.914);
+      border: 1px solid rgba(253, 253, 14, 0.914);
+      padding: 5px 14px;
+    }
+
+    .cover-content {
+      position: relative;
+      z-index: 2;
+      padding: 0 20px 80px;
+      max-width: 900px;
+    }
+
+    .cover-eyebrow {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .2em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .cover-title {
+      font-family: 'Zilla Slab', serif;
+      font-size: clamp(52px, 8vw, 96px);
+      font-weight: 700;
+      line-height: .95;
+      color: #fff;
+      margin-bottom: 0;
+      letter-spacing: -.02em;
+    }
+
+    .cover-title span {
+      color: var(--gold);
+      display: block;
+    }
+
+    .cover-sub {
+      font-family: 'Zilla Slab', serif;
+      font-size: clamp(16px, 2.2vw, 22px);
+      font-weight: 300;
+      font-style: italic;
+      color: #e3e3e3ee;
+      margin-top: 20px;
+      margin-bottom: 48px;
+    }
+
+    .cover-metrics {
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      border-top: 1px solid var(--border);
+      padding-top: 32px;
+      flex-wrap: wrap;
+      text-align: center;
+    }
+
+    .cover-metric {
+      padding-right: 48px;
+      margin-right: 48px;
+      border-right: 1px solid var(--border);
+    }
+
+    .cover-metric:last-child {
+      border-right: none;
+      margin-right: 0;
+      padding-right: 0;
+    }
+
+    .cover-metric .num {
+      font-family: var(--font-og);
+      font-size: 50px;
+      font-weight: 600;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 5px;
+    }
+
+    @media(max-width:768px) {
+      .cover-metric .num {
+        font-size: 28px;
+      }
+    }
+
+    .cover-metric .lbl {
+      font-family: var(--font-og);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: .16em;
+      color: #fff;
+      text-transform: uppercase;
+    }
+
+    .cover-overweight {
+      font-family: var(--font-og);
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: .2em;
+      color: rgb(24, 217, 242);
+      border: 5px solid rgb(24, 217, 242);
+      background: #07070716;
+      border-style: double;
+      padding: 10px 20px;
+    }
+
+    .cover-scroll-hint {
+      position: absolute;
+      bottom: 28px;
+      right: 60px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      letter-spacing: .18em;
+      color: rgb(255, 255, 3);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: scrollhint 2s ease infinite;
+    }
+
+    @keyframes scrollhint {
+
+      0%,
+      100% {
+        transform: translateY(0)
+      }
+
+      50% {
+        transform: translateY(5px)
+      }
+    }
+
+    /* ══════════════════════════════════════════
+   SLIDE 2 — EXECUTIVE SUMMARY
+══════════════════════════════════════════ */
+    #s2 {
+      background: radial-gradient(ellipse 80% 60% at 70% 40%, rgba(43, 58, 82, .5) 0%, transparent 70%), repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(255, 255, 255, .012) 59px, rgba(255, 255, 255, .012) 60px), repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(255, 255, 255, .012) 59px, rgba(255, 255, 255, .012) 60px), var(--dark);
+      flex-direction: row;
+      gap: 15px;
+    }
+
+    .s2-left {
+      width: 340px;
+      flex-shrink: 0;
+      background: rgba(13, 13, 13, 0.088);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      align-items: center;
+      justify-content: space-around;
+    }
+
+    @media(max-width:768px) {
+      .s2-left {
+        justify-content: space-between;
+      }
+    }
+
+    @media(max-width:500px) {
+      .s2-left {
+        padding: 0;
+      }
+    }
+
+    .s2-left::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--gold);
+    }
+
+    .s2-kpi {
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .s2-kpi .num {
+      font-family: var(--font-og);
+      font-size: 38px;
+      font-weight: 600;
+      color: var(--gold);
+      line-height: 1;
+    }
+
+    @media(max-width:768px) {
+      .s2-kpi .num {
+        font-size: 26px;
+      }
+    }
+
+    @media(max-width:498px) {
+      .s2-kpi .num {
+        font-size: 20px;
+      }
+    }
+
+    .s2-kpi .lbl {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: .14em;
+      color: var(--lightgray);
+      text-transform: uppercase;
+      margin-top: 3px;
+    }
+
+    .s2-right {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    @media(max-width:768px) {
+      .s2-right {
+        gap: 10px;
+      }
+    }
+
+
+    @media(max-width:500px) {
+      .s2-right {
+        gap: 4px;
+      }
+    }
+
+    .s2-headline {
+      font-family: 'Zilla Slab', serif;
+      font-size: clamp(26px, 3.5vw, 40px);
+      font-weight: 700;
+      line-height: 1.15;
+      color: #fff;
+      margin-bottom: 12px;
+    }
+
+    @media(max-width:500px) {
+      .s2-headline {
+        font-size: 18px;
+      }
+    }
+
+    .s2-subhead {
+      font-size: 14px;
+      color: var(--midgray);
+      margin-bottom: 40px;
+      max-width: 600px;
+    }
+
+    @media(max-width:500px) {
+      .s2-subhead {
+        margin-bottom: 7px;
+        font-size: 12px;
+      }
+    }
+
+    .s2-bullet {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 22px;
+      align-items: flex-start;
+    }
+
+    @media(max-width:500px) {
+      .s2-bullet {
+        gap: 6px;
+        margin-bottom: 5px;
+      }
+    }
+
+    .s2-bullet-bar {
+      width: 4px;
+      min-height: 60px;
+      background: var(--gold);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .s2-bullet-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .07em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .s2-bullet-body {
+      font-size: 13px;
+      color: var(--midgray);
+      line-height: 1.65;
+    }
+
+    @media(max-width:500px) {
+      .s2-bullet-body {
+        font-size: 11px;
+        line-height: 1.35;
+      }
+    }
+
+    /* ══════════════════════════════════════════
+   SLIDE 3 — BUSINESS MODEL
+══════════════════════════════════════════ */
+    #s3 {
+      background: radial-gradient(ellipse 80% 60% at 70% 40%, rgba(43, 58, 82, .5) 0%, transparent 70%), repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(255, 255, 255, .012) 59px, rgba(255, 255, 255, .012) 60px), repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(255, 255, 255, .012) 59px, rgba(255, 255, 255, .012) 60px), var(--dark);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .s3-inner {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+
+    @media(max-width:768px) {
+      .s3-inner {
+        flex-direction: column;
+      }
+    }
+
+    .s3-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    @media(max-width:500px) {
+      .s3-content {
+        margin-top: 15px;
+      }
+    }
+
+    .s3-image-col {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .s3-image-col::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(200, 164, 21, .06) 39px, rgba(200, 164, 21, .06) 40px),
+        repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(200, 164, 21, .06) 39px, rgba(200, 164, 21, .06) 40px);
+    }
+
+    .s3-image-col .stat-stack {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 50px 110px;
+      height: 100%;
+      text-align: center;
+    }
+
+    @media(max-width:768px) {
+      .s3-image-col .stat-stack {
+        flex-direction: row;
+        justify-content: center;
+        padding: 50px 30px;
+      }
+    }
+
+    @media(max-width:568px) {
+      .s3-image-col .stat-stack {
+        padding: 10px;
+        flex-direction: row;
+        text-align: center;
+      }
+    }
+
+    .s3-image-col .stat-item {
+      padding: 14px 0 10px;
+    }
+
+    @media(max-width:768px) {
+      .s3-image-col .stat-item {
+        padding: 0 8px;
+      }
+    }
+
+    .s3-image-col .stat-item .n {
+      font-family: var(--font-og);
+      font-size: 32px;
+      color: var(--gold);
+    }
+
+    @media(max-width:768px) {
+      .s3-image-col .stat-item .n {
+        font-size: 22px;
+      }
+    }
+
+    .s3-image-col .stat-item .l {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 9px;
+      letter-spacing: .14em;
+      color: var(--lightgray);
+      text-transform: uppercase;
+    }
+
+    @media(max-width:768px) {
+      .l {
+        font-size: 40px;
+      }
+    }
+
+    .seg-card {
+      background: #34343418;
+      padding: 20px;
+      margin-bottom: 12px;
+      display: grid;
+      align-items: center;
+      gap: 20px;
+      transition: transform .2s, box-shadow .2s;
+      cursor: default;
+    }
+
+    @media(max-width:768px) {
+      .seg-card {
+        margin-bottom: 6px;
+      }
+    }
+
+    @media(max-width:500px) {
+      .seg-card {
+        padding: 10px;
+      }
+    }
+
+    .seg-card:hover {
+      transform: translateX(4px);
+      box-shadow: -4px 0 0 var(--gold);
+    }
+
+    .seg-pct {
+      font-family: var(--font-og);
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    @media(max-width:768px) {
+      .seg-pct {
+        font-size: 18px;
+      }
+    }
+
+    .seg-pct.c1 {
+      color: var(--green-light);
+    }
+
+    .seg-pct.c2 {
+      color: var(--gold);
+    }
+
+    .seg-pct.c3 {
+      color: rgba(66, 114, 248, 0.846);
+    }
+
+    .seg-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--lightgray);
+      margin-bottom: 4px;
+    }
+
+    @media(max-width:768px) {
+      .seg-name {
+        font-size: 10px;
+      }
+    }
+
+    .seg-desc {
+      font-size: 12px;
+      color: var(--midgray);
+      line-height: 1.5;
+    }
+
+    @media(max-width:768px) {
+      .seg-desc {
+        font-size: 9px;
+      }
+    }
+
+    .seg-stats {
+      text-align: right;
+    }
+
+    .seg-stats .rev {
+      font-family: var(--font-og);
+      font-size: 16px;
+      color: var(--lightgray);
+    }
+
+    @media(max-width:768px) {
+      .seg-stats .rev {
+        font-size: 15px;
+      }
+    }
+
+    .seg-stats .grow {
+      font-size: 11px;
+      color: var(--midgray);
+      margin-top: 2px;
+    }
+
+    /* ══════════════════════════════════════════
+   SLIDE 4 — COMPETITIVE MOAT
+══════════════════════════════════════════ */
+    #s4 {
+      background: radial-gradient(ellipse 80% 60% at 70% 40%, rgba(43, 58, 82, .5) 0%, transparent 70%), repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(255, 255, 255, .012) 59px, rgba(255, 255, 255, .012) 60px), repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(255, 255, 255, .012) 59px, rgba(255, 255, 255, .012) 60px), var(--dark);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .s4-inner {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .s4-header {
+      margin-bottom: 48px;
+    }
+
+    @media(max-width:768px) {
+      .s4-header {
+        margin-bottom: 5px;
+      }
+    }
+
+
+    .s4-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      flex: 1;
+      margin-top: 12px;
+    }
+
+    .moat-card {
+      background: #1e1e1e37;
+      padding: 36px 32px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      transition: background .2s;
+    }
+
+    @media(max-width:768px) {
+      .moat-card {
+        padding: 10px;
+      }
+    }
+
+    .moat-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--gold);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .5s ease;
+    }
+
+    .moat-card.in::after {
+      transform: scaleX(1);
+    }
+
+    .moat-card:hover {
+      background: #525252;
+    }
+
+    .moat-num {
+      font-family: 'Zilla Slab', serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 2px;
+    }
+
+    .moat-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .moat-sub {
+      font-family: 'Zilla Slab', serif;
+      font-size: 12px;
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .moat-body {
+      font-size: 13px;
+      color: var(--lightgray);
+      line-height: 1.75;
+      flex: 1;
+    }
+
+    @media(max-width:768px) {
+      .moat-body {
+        font-size: 10.5px;
+      }
+    }
+
+    .moat-case {
+      margin-top: 20px;
+      background: rgba(45, 236, 15, 0.15);
+      border-left: 2px solid var(--gold);
+      padding: 10px 14px;
+      font-size: 11px;
+      color: var(--gold-light);
+      line-height: 1.6;
+    }
+
+    @media(max-width:768px) {
+      .moat-case {
+        margin-top: 5px;
+      }
+    }
+
+    /* ══════════════════════════════════════════
+   SLIDE 5 — FINANCIAL INFLECTION
+══════════════════════════════════════════ */
+    #s5 {
+      background: radial-gradient(ellipse 80% 60% at 70% 40%, rgba(43, 58, 82, .5) 0%, transparent 70%), repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(255, 255, 255, .012) 59px, rgba(255, 255, 255, .012) 60px), repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(255, 255, 255, .012) 59px, rgba(255, 255, 255, .012) 60px), var(--dark);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .s5-inner {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      height: 100%;
+      width: 100%;
+    }
+
+    @media(max-width:500px) {
+      .s5-inner {
+        gap: 8px;
+      }
+    }
+
+    .s5-chart-area {
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      width: 100%;
+    }
+
+    @media(max-width:568px) {
+      .s5-chart-area {
+        padding: 15px;
+      }
+    }
+
+    .s5-chart-wrap {
+      flex: 1;
+      position: relative;
+      min-height: 0;
+    }
+
+    .s5-stats {
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    @media(max-width:768px) {
+      .s5-stats {
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 5px;
+      }
+    }
+
+    .stat-box {
+      background: #eee1b21b;
+      width: 200px;
+      padding: 20px 22px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: border-color .2s;
+    }
+
+    @media(max-width:768px) {
+      .stat-box {
+        padding: 10px;
+        gap: 5px;
+      }
+    }
+
+    @media(max-width:500px) {
+      .stat-box {
+        padding: 5px;
+      }
+    }
+
+    .stat-box:hover {
+      border-color: var(--gold);
+    }
+
+    .stat-box .n {
+      font-family: var(--font-og);
+      font-size: 26px;
+      font-weight: 600;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    @media(max-width:500px) {
+      .stat-box .n {
+        font-size: 16px;
+        margin: 0;
+      }
+    }
+
+    .stat-box .l {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--midgray);
+    }
+
+    .s5-expl {
+      font-size: 16px;
+      color: var(--midgray);
+    }
+
+    @media(max-width:768px) {
+      .s5-expl {
+        font-size: 10px;
+        color: var(--midgray);
+      }
+    }
+
+    /* ══════════════════════════════════════════
+   SLIDE 6 — MARGINS
+══════════════════════════════════════════ */
+    #s6 {
+      background: radial-gradient(ellipse 80% 60% at 70% 40%, rgba(43, 58, 82, .5) 0%, transparent 70%), repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(255, 255, 255, .012) 59px, rgba(255, 255, 255, .012) 60px), repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(255, 255, 255, .012) 59px, rgba(255, 255, 255, .012) 60px), var(--dark);
+      flex-direction: column;
+      justify-content: center;
+
+    }
+
+    .s6-inner {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .s6-left,
+    .s6-right {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .s6-right {
+      gap: 5px;
+    }
+
+
+    .s6-left {
+      border-right: 1px solid var(--cream-border);
+      width: 100%;
+      border-top: 20px;
+    }
+
+    @media(max-width:768px) {
+      .s6-left {
+        margin-top: 20px;
+      }
+    }
+
+    .s6-chart-wrap {
+      flex: 1;
+      position: relative;
+      margin-top: 14px;
+    }
+
+    .margin-card {
+      background: #04041823;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      transition: transform .2s;
+    }
+
+    @media(max-width:768px) {
+      .margin-card {
+        padding: 10px;
+      }
+    }
+
+    .margin-card:hover {
+      transform: translateX(3px);
+    }
+
+    .margin-card .bar-accent {
+      width: 4px;
+      height: 48px;
+      flex-shrink: 0;
+    }
+
+    .margin-card .pct {
+      font-family: var(--font-og);
+      font-size: 24px;
+      font-weight: 600;
+      min-width: 70px;
+    }
+
+    .margin-card .info .title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: #fff;
+      margin-bottom: 3px;
+    }
+
+    .margin-card .info .sub {
+      font-size: 11px;
+      color: var(--midgray);
+    }
+
+    /* ══════════════════════════════════════════
+   SLIDE 7 — REAL ESTATE
+══════════════════════════════════════════ */
+    #s7 {
+      background: var(--charcoal);
+      justify-content: center;
+    }
+
+    .s7-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 80% at 85% 50%, rgba(43, 58, 82, .4) 0%, transparent 65%),
+        repeating-linear-gradient(45deg, transparent, transparent 30px, rgba(200, 164, 21, .025) 30px, rgba(200, 164, 21, .025) 31px),
+        var(--charcoal);
+    }
+
+    .s7-inner {
+      position: relative;
+      z-index: 2;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .s7-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      margin-top: 40px;
+    }
+
+    .re-card {
+      background: rgba(10, 9, 40, 0.097);
+      border: 1px solid var(--border);
+      padding: 32px 28px;
+      transition: background .2s, border-color .2s;
+    }
+
+    @media(max-width:768px) {
+      .re-card {
+        padding: 12px;
+      }
+    }
+
+    .re-card:hover {
+      background: rgba(200, 164, 21, .07);
+      border-color: rgba(200, 164, 21, .3);
+    }
+
+    .re-card .big {
+      font-family: var(--font-og);
+      font-size: 40px;
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+
+    @media(max-width:768px) {
+      .re-card .big {
+        font-size: 22px;
+        margin-bottom: 5px;
+      }
+    }
+
+    .re-card .title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: #fff;
+      margin-bottom: 12px;
+    }
+
+    .re-card .body {
+      font-size: 12px;
+      color: var(--lightgray);
+      line-height: 1.7;
+    }
+
+    @media(max-width:768px) {
+      .re-card .body {
+        font-size: 9.5px;
+        margin-bottom: 5px;
+      }
+    }
+
+    .governance-banner {
+      margin-top: 28px;
+      background: rgba(200, 164, 21, .08);
+      border: 1px solid rgba(200, 164, 21, .25);
+      padding: 18px 24px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    @media(max-width:768px) {
+      .governance-banner {
+        margin-top: 10px;
+        padding: 20px;
+      }
+    }
+
+    @media(max-width:500px) {
+      .governance-banner {
+        margin-top: 5px;
+        padding: 10px;
+      }
+    }
+
+    .governance-banner .icon {
+      font-family: 'Zilla Slab', serif;
+      font-size: 20px;
+      color: var(--gold);
+      flex-shrink: 0;
+    }
+
+    .governance-banner .text {
+      font-size: 13px;
+      color: var(--lightgray);
+      line-height: 1.65;
+    }
+
+    @media(max-width:768px) {
+      .governance-banner .text {
+        font-size: 10px;
+      }
+    }
+
+    .governance-banner .text strong {
+      color: #fff;
+    }
+
+    /* ══════════════════════════════════════════
+   SLIDE 8 — MANAGEMENT
+══════════════════════════════════════════ */
+    #s8 {
+      background: radial-gradient(ellipse 80% 60% at 70% 40%, rgba(43, 58, 82, .5) 0%, transparent 70%), repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(255, 255, 255, .012) 59px, rgba(255, 255, 255, .012) 60px), repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(255, 255, 255, .012) 59px, rgba(255, 255, 255, .012) 60px), var(--dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .s8-inner {
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+    }
+
+    @media(max-width:768px) {
+      .s8-inner {
+        flex-direction: column;
+        gap: 5px;
+      }
+    }
+
+    .s8-left {
+      background: rgba(8, 8, 8, 0.10);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+    }
+
+    @media(max-width:768px) {
+      .s8-left {
+        padding: 4px 8px;
+        height: 100%;
+        flex-direction: row;
+        margin-bottom: 20px;
+        justify-content: center;
+      }
+    }
+
+    @media(max-width:500px) {
+      .s8-left {
+        padding: 4px 7px;
+      }
+    }
+
+    .s8-left::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--gold);
+    }
+
+    .avatar-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .avatar {
+      width: 250px;
+      height: 250px;
+      background-size: cover;
+      border-radius: 20%;
+      background: var(--darkgray);
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      margin-bottom: 20px;
+      margin-top: 20px;
+      overflow: hidden;
+    }
+
+    @media(max-width:768px) {
+      .avatar {
+        width: 125px;
+        height: 125px;
+        margin-bottom: 10px;
+        margin-top: 12px;
+      }
+    }
+
+    @media(max-width:500px) {
+      .avatar {
+        width: 85px;
+        height: 85px;
+        margin-top: 12px;
+      }
+    }
+
+    .imggilles {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .s8-name {
+      font-family: 'Zilla Slab', serif;
+      font-size: 40px;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    @media(max-width:768px) {
+      .s8-name {
+        font-size: 18px;
+      }
+    }
+
+    .s8-role {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: .14em;
+      color: #fff;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+
+    @media(max-width:768px) {
+      .s8-role {
+        font-size: 8px;
+        margin-bottom: 5px;
+      }
+    }
+
+    @media(max-width:768px) {
+      .s8-stake-group {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+
+    .s8-stake {
+      font-family: var(--font-og);
+      font-size: 44px;
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 5px;
+    }
+
+    @media(max-width:768px) {
+      .s8-stake {
+        font-size: 16px;
+        letter-spacing: 0.1em;
+      }
+    }
+
+    .s8-stake-lbl {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 9px;
+      letter-spacing: .12em;
+      color: #fff;
+      margin-top: 4px;
+      text-transform: uppercase;
+    }
+
+    .s8-action {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    @media(max-width:768px) {
+      .s8-action {
+        font-size: 16px;
+        letter-spacing: 0.05em;
+      }
+    }
+
+    .s8-action-lbl {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 9px;
+      letter-spacing: .12em;
+      color: #fff;
+      text-transform: uppercase;
+      margin-top: 2px;
+
+    }
+
+    .s8-right {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    @media(max-width:768px) {
+      .s8-right {
+        gap: 8px;
+      }
+    }
+
+    .tl-item {
+      display: flex;
+      flex-direction: column;
+      align-items: start;
+      margin-bottom: 3px;
+    }
+
+    .tl-year {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      color: var(--gold);
+      background: rgba(200, 164, 21, .1);
+      border: 1px solid rgba(200, 164, 21, .2);
+      padding: 5px 0;
+      text-align: center;
+      text-transform: uppercase;
+      flex-shrink: 0;
+      margin-bottom: 4px;
+    }
+
+    .tl-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      color: #FAF8F4;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .tl-body {
+      font-size: 12.5px;
+      color: var(--midgray);
+      line-height: 1.6;
+    }
+
+    .ceo-quote {
+      background: var(--charcoal);
+      padding: 10px 20px;
+      margin-top: 8px;
+      border-left: 3px solid var(--gold);
+    }
+
+    .ceo-quote p {
+      font-family: 'Zilla Slab', serif;
+      font-style: italic;
+      font-size: 14px;
+      color: var(--gold-light);
+      line-height: 1.6;
+    }
+
+    @media(max-width:768px) {
+      .ceo-quote p {
+        font-size: 11px;
+      }
+    }
+
+    .ceo-quote cite {
+      display: block;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 9px;
+      letter-spacing: .12em;
+      color: var(--gray);
+      margin-top: 8px;
+      text-transform: uppercase;
+    }
+
+    @media(max-width:768px) {
+      .ceo-quote cite {
+        font-size: 8px;
+        color: #fff;
+      }
+    }
+
+    /* ══════════════════════════════════════════
+   SLIDE 9 — VALUATION
+══════════════════════════════════════════ */
+    #s9 {
+      background: radial-gradient(ellipse 80% 60% at 70% 40%, rgba(43, 58, 82, .5) 0%, transparent 70%), repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(255, 255, 255, .012) 59px, rgba(255, 255, 255, .012) 60px), repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(255, 255, 255, .012) 59px, rgba(255, 255, 255, .012) 60px), var(--dark);
+
+    }
+
+    .s9-inner {
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    .s9-scenarios {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 8px;
+    }
+
+    @media(max-width:768px) {
+      .s9-scenarios {
+        margin-top: 10px;
+        gap: 8px;
+      }
+    }
+
+    .scenario-card {
+      display: flex;
+      flex-direction: column;
+      border-top: 4px solid transparent;
+      background: #ffffff0e;
+      border-left: 1px solid var(--cream-border);
+      border-right: 1px solid var(--cream-border);
+      border-bottom: 1px solid var(--cream-border);
+      overflow: hidden;
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    .scenario-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, .08);
+    }
+
+    .scenario-card.bear {
+      border-top-color: var(--red);
+    }
+
+    .scenario-card.base {
+      border-top-color: var(--green-light);
+    }
+
+    .scenario-card.bull {
+      border-top-color: var(--gold);
+    }
+
+    .sc-header {
+      padding: 24px 28px 16px;
+      border-bottom: 1px solid var(--cream-border);
+    }
+
+    @media(max-width:768px) {
+      .sc-header {
+        padding: 2px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+
+    .sc-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    @media(max-width:768px) {
+      .sc-label {
+        margin-bottom: 0;
+      }
+    }
+
+    .sc-label.bear {
+      color: var(--red);
+    }
+
+    .sc-label.base {
+      color: var(--green-light);
+    }
+
+    .sc-label.bull {
+      color: var(--gold);
+    }
+
+    .sc-price {
+      font-family: var(--font-og);
+      font-size: 52px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1;
+    }
+
+    @media(max-width:768px) {
+      .sc-price {
+        font-size: 28px;
+      }
+    }
+
+    @media(max-width:500px) {
+      .sc-price {
+        font-size: 20px;
+      }
+    }
+
+    .sc-return {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: .06em;
+    }
+
+    @media(max-width:768px) {
+      .sc-return {
+        font-size: 12px;
+      }
+    }
+
+    .sc-return.neg {
+      color: var(--red);
+    }
+
+    .sc-return.pos {
+      color: var(--green-light);
+    }
+
+    .sc-return.big {
+      color: var(--gold);
+    }
+
+    .sc-body {
+      padding: 20px 28px;
+      flex: 1;
+    }
+
+    @media(max-width:768px) {
+      .sc-body {
+        padding: 5px 20px;
+      }
+    }
+
+    .sc-row {
+      display: flex;
+      justify-content: space-between;
+      flex-direction: column;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--cream-border);
+      font-size: 12px;
+      gap: 2px;
+    }
+
+    @media(max-width:768px) {
+      .sc-row {
+        padding: 5px 0;
+      }
+    }
+
+    .sc-row:last-child {
+      border-bottom: none;
+    }
+
+    .sc-row .k {
+      color: var(--gold);
+    }
+
+    .sc-row .v {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 600;
+      color: #fff;
+      font-size: 13px;
+      letter-spacing: 0.07em;
+    }
+
+    .rr-banner {
+      background: rgba(6, 6, 6, 0.867);
+      padding: 16px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+      border: 2px solid #fbfb15bd;
+    }
+
+    @media(max-width:768px) {
+      .rr-banner {
+        margin-top: 4px;
+        padding: 10px;
+        gap: 5px;
+      }
+    }
+
+    .rr-item {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .rr-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .rr-item .val {
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    /* ══════════════════════════════════════════
+   SLIDE 10 — RISK MATRIX
+══════════════════════════════════════════ */
+    #s10 {
+      background: radial-gradient(ellipse 80% 60% at 70% 40%, rgba(43, 58, 82, .5) 0%, transparent 70%), repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(255, 255, 255, .012) 59px, rgba(255, 255, 255, .012) 60px), repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(255, 255, 255, .012) 59px, rgba(255, 255, 255, .012) 60px), var(--dark);
+
+    }
+
+    .s10-inner {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    @media(max-width:768px) {
+      .s10-inner {
+        padding: 0;
+      }
+    }
+
+    .risk-table {
+      width: 100%;
+      border-collapse: collapse;
+      flex: 1;
+      margin-top: 12px;
+    }
+
+    @media(max-width:768px) {
+      .risk-table {
+        margin-top: 12px;
+      }
+    }
+
+    .risk-table th {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--charcoal);
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 2px solid var(--cream-border);
+      background: var(--gold);
+      text-align: center;
+    }
+
+    .risk-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--cream-border);
+      font-size: 12.5px;
+      vertical-align: middle;
+    }
+
+    @media(max-width:768px) {
+      .risk-table td {
+        padding: 10px;
+      }
+    }
+
+    /*@media(max-width:1128px) {
+      .risk-table td {
+        font-size: 15px;
+      }
+    }*/
+
+    .risk-table tr:nth-child(even) td {
+      background: rgba(8, 8, 8, 0.266);
+    }
+
+    .risk-table tr:hover td {
+      background: rgba(2, 2, 1, 0.04);
+    }
+
+    .risk-name {
+      font-weight: 600;
+      color: #fff;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px;
+      letter-spacing: .02em;
+    }
+
+    .risk-sub {
+      font-size: 11px;
+      color: var(--midgray);
+      margin-top: 1px;
+    }
+
+    .sev {
+      display: inline-block;
+      padding: 4px 12px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .sev.high {
+      background: rgba(155, 35, 53, 0.267);
+      color: rgb(244, 16, 16);
+      border: 1px solid rgba(155, 35, 53, .2);
+    }
+
+    .sev.med {
+      background: rgba(200, 164, 21, .12);
+      color: #f2bb07;
+      border: 1px solid rgba(200, 164, 21, .25);
+    }
+
+    .sev.low {
+      background: rgba(64, 145, 108, .1);
+      color: rgb(6, 147, 6);
+      border: 1px solid rgba(64, 145, 108, .2);
+    }
+
+    /* ══════════════════════════════════════════
+   SLIDE 11 — CONCLUSION
+══════════════════════════════════════════ */
+    #s11 {
+      background: var(--dark);
+    }
+
+    .s11-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 80% 50%, rgba(43, 58, 82, .6) 0%, transparent 65%),
+        repeating-linear-gradient(135deg, transparent, transparent 40px, rgba(200, 164, 21, .02) 40px, rgba(200, 164, 21, .02) 41px),
+        var(--dark);
+    }
+
+    .s11-inner {
+      position: relative;
+      z-index: 2;
+      height: 100%;
+      display: grid;
+      grid-template-columns: 1fr 380px;
+    }
+
+    .s11-inner {
+      display: flex;
+      flex-direction: row;
+    }
+
+    @media(max-width:768px) {
+      .s11-inner {
+        flex-wrap: wrap;
+      }
+    }
+
+    .s11-left {
+      padding: 64px 56px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-right: 1px solid var(--border);
+    }
+
+    @media(max-width:768px) {
+      .s11-left {
+        padding: 0;
+      }
+    }
+
+    .s11-title {
+      font-family: 'Zilla Slab', serif;
+      font-size: clamp(36px, 5vw, 58px);
+      font-weight: 700;
+      line-height: 1.05;
+      color: #fff;
+      margin-bottom: 40px;
+    }
+
+    @media(max-width:768px) {
+      .s11-title {
+        font-size: 28px;
+        margin-bottom: 15px;
+      }
+    }
+
+
+    @media(max-width:500px) {
+      .s11-title {
+        font-size: 20px;
+      }
+    }
+
+    .s11-title em {
+      color: var(--gold);
+      font-style: normal;
+    }
+
+    .pillar {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 24px;
+      align-items: flex-start;
+    }
+
+    @media(max-width:768px) {
+      .pillar {
+        margin-bottom: 6px;
+      }
+    }
+
+    .pillar-num {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      color: var(--gold);
+      background: rgba(200, 164, 21, .1);
+      border: 1px solid rgba(200, 164, 21, .2);
+      padding: 5px 10px;
+      flex-shrink: 0;
+    }
+
+    .pillar-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    @media(max-width:500px) {
+      .pillar-title {
+        font-size: 11px;
+      }
+    }
+
+    .pillar-body {
+      font-size: 12px;
+      color: var(--lightgray);
+      line-height: 1.6;
+    }
+
+    @media(max-width:500px) {
+      .pillar-body {
+        font-size: 11px;
+      }
+    }
+
+    .s11-right {
+      padding: 64px 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      width: 100%;
+    }
+
+    @media(max-width:768px) {
+      .s11-right {
+        padding: 10px 0;
+      }
+    }
+
+    @media(max-width:500px) {
+      .s11-right {
+        padding: 10px 0;
+        gap: 6px;
+      }
+    }
+
+    .target-ring {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      border: 2px solid rgb(252, 252, 10);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      position: relative;
+      margin-bottom: 32px;
+    }
+
+    @media(max-width:768px) {
+      .target-ring {
+        width: 100px;
+        height: 100px;
+        margin-bottom: 12px;
+      }
+    }
+
+    @media(max-width:500px) {
+      .target-ring {
+        width: 90px;
+        height: 90px;
+        margin-bottom: 12px;
+      }
+    }
+
+    .target-ring::before {
+      content: '';
+      position: absolute;
+      inset: 11px;
+      border-radius: 50%;
+      border: 1px solid rgba(244, 219, 33, 0.497);
+    }
+
+    @media(max-width:768px) {
+      .target-ring::before {
+        inset: 5px;
+      }
+    }
+
+    .target-ring .t {
+      font-family: var(--font-og);
+      letter-spacing: 0.05em;
+      font-size: 52px;
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1;
+    }
+
+    @media(max-width:768px) {
+      .target-ring .t {
+        font-size: 30px;
+      }
+    }
+
+    @media(max-width:500px) {
+      .target-ring .t {
+        font-size: 27px;
+      }
+    }
+
+    .target-ring .tl {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .14em;
+      color: #fff;
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+
+    @media(max-width:768px) {
+      .target-ring .tl {
+        font-size: 8px;
+      }
+    }
+
+    .long-badge {
+      width: 100%;
+      background: var(--gold);
+      padding: 16px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--dark);
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    @media(max-width:768px) {
+      .long-badge {
+        font-size: 10px;
+        padding: 8px;
+        margin-bottom: 8px;
+      }
+    }
+
+    .s11-metrics {
+      width: 100%;
+    }
+
+    .s11-metric-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #fff;
+      font-size: 12px;
+    }
+
+    @media(max-width:768px) {
+      .s11-metric-row {
+        padding: 7px 0;
+      }
+    }
+
+    @media(max-width:500px) {
+      .s11-metric-row {
+        padding: 4px 0;
+      }
+    }
+
+    .s11-metric-row:last-child {
+      border-bottom: none;
+    }
+
+    .s11-metric-row .k {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 15px;
+      letter-spacing: .1em;
+      color: #fff;
+      text-transform: uppercase;
+    }
+
+    @media(max-width:768px) {
+      .s11-metric-row .k {
+        font-size: 11px;
+      }
+    }
+
+    .s11-metric-row .v {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--gold);
+    }
+
+    /* ══════════════════════════════════════════
+   SLIDE 12 — ANALYST COMMENTARY
+══════════════════════════════════════════ */
+    #s12 {
+      background: radial-gradient(ellipse 80% 60% at 70% 40%, rgba(43, 58, 82, .5) 0%, transparent 70%), repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(255, 255, 255, .012) 59px, rgba(255, 255, 255, .012) 60px), repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(255, 255, 255, .012) 59px, rgba(255, 255, 255, .012) 60px), var(--dark);
+    }
+
+    .s12-inner {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .s12-header {
+      padding: 28px 56px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-shrink: 0;
+    }
+
+    @media(max-width:530px) {
+      .s12-header {
+        padding: 18px;
+      }
+    }
+
+    .s12-header .firm {
+      font-family: 'Zilla Slab', serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      border-right: 1px solid rgba(255, 255, 255, .2);
+      padding-right: 24px;
+    }
+
+    .s12-header .title-block strong {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      color: #fff;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .s12-header .title-block span {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      letter-spacing: .12em;
+      color: rgba(255, 255, 255, .5);
+      text-transform: uppercase;
+    }
+
+    .s12-badge {
+      margin-left: auto;
+      background: var(--gold);
+      color: var(--midgray);
+      padding: 6px 16px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .s12-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .analyst-card {
+      padding: 24px 8px;
+      border-right: 1px solid var(--cream-border);
+      border-bottom: 1px solid var(--cream-border);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: background .2s;
+    }
+
+    @media(max-width:760px) {
+      .analyst-card {
+        padding: 14px 0;
+      }
+    }
+
+    @media(max-width:520px) {
+      .analyst-card {
+        padding: 3px 0;
+        gap: 5px;
+      }
+    }
+
+    .analyst-card:hover {
+      background: rgba(202, 202, 201, 0.09);
+    }
+
+    .analyst-card:nth-child(even) {
+      border-right: none;
+    }
+
+    .ac-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .ac-num {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      color: var(--dark);
+      background: var(--gold);
+      padding: 3px 8px;
+      flex-shrink: 0;
+    }
+
+    .ac-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: #fff;
+    }
+
+    @media(max-width:520px) {
+      .ac-title {
+        font-size: 9px;
+      }
+    }
+
+    .ac-tag {
+      margin-left: auto;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      background: rgba(16, 16, 16, 0.914);
+      border: 1px solid rgba(200, 164, 21, .2);
+      padding: 4px 8px;
+      white-space: nowrap;
+    }
+
+    .ac-body {
+      font-size: 12px;
+      color: var(--midgray);
+      line-height: 1.7;
+      flex: 1;
+    }
+
+    @media(max-width:520px) {
+      .ac-body {
+        font-size: 10px;
+      }
+    }
+
+    @media(min-width:820px) {
+      .ac-body {
+        font-size: 15px;
+      }
+    }
+
+    @media(min-width:1100px) {
+      .ac-body {
+        font-size: 18px;
+      }
+    }
+
+    .ac-body strong {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* responsive */
+    @media(max-width:768px) {
+      .s2-left {
+        width: 100%;
+        min-height: 200px;
+        flex-direction: row;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        gap: 16px;
+        padding: 32px 24px;
+        text-align: center;
+      }
+
+      #s2 {
+        flex-direction: column;
+      }
+
+      .s11-inner {
+        grid-template-columns: 1fr;
+      }
+
+
+
+      .s9-scenarios,
+      .s4-grid,
+      .s7-grid,
+      .s12-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .cover-title {
+        font-size: 40px;
+      }
+
+      .cover-metrics {
+        gap: 20px;
+      }
+
+      .cover-metric {
+        padding-right: 20px;
+        margin-right: 20px;
+      }
+
+      .risk-table th:last-child,
+      .risk-table td:last-child {
+        display: none;
+      }
+    }
+
+    /* ══════════════════════════════════════════
+   SLIDE 13 — FINAL
+══════════════════════════════════════════ */
+    .thesis-footer-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      font-family: 'Barlow Condensed', sans-serif;
+      height: 100%;
+      color: #fff;
+      padding: 20px;
+      background: radial-gradient(ellipse 70% 50% at 80% 50%, rgba(43, 58, 82, .6) 0%, transparent 65%), repeating-linear-gradient(135deg, transparent, transparent 40px, rgba(200, 164, 21, .02) 40px, rgba(200, 164, 21, .02) 41px), var(--dark);
+    }
+
+    #final {
+      background: var(--dark);
+    }
+
+    .thesis-outro {
+      margin-top: 20px;
+    }
+
+    .thesis-outro p {
+      margin: 8px 0;
+    }
+
+    .highlight-text {
+      font-weight: 600;
+      font-size: 1.1em;
+      color: #f6f6f6;
+    }
+
+    .margin-top {
+      padding: 20px;
+      font-size: 24px;
+      text-align: center;
+    }
+
+    .reader-supported {
+      font-style: italic;
+      color: var(--gold);
+      text-align: center;
+      padding: 30px;
+      font-size: 20px;
+    }
+
+    @media(max-width:768px) {
+      .reader-supported {
+        padding: 0;
+      }
+    }
+
+    .cta-box {
+      padding: 32px;
+      border-radius: 25px;
+      border: 4px solid var(--gold);
+      text-align: center;
+      margin-bottom: 100px;
+    }
+
+    @media(max-width:768px) {
+      .cta-box {
+        margin-bottom: 30px;
+      }
+    }
+
+    .cta-text {
+      font-size: 1.15em;
+      margin-bottom: 24px;
+      color: #d1d7ea;
+      font-weight: 500;
+    }
+
+    @media(max-width:768px) {
+      .cta-text {
+        font-size: 1em;
+      }
+    }
+
+    .button-group {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 14px 28px;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1em;
+      transition: opacity 0.2s ease;
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+    }
+
+    .btn-substack {
+      background-color: #ff6719;
+      color: #ffffff;
+      box-shadow: 0 4px 6px rgba(255, 103, 25, 0.2);
+    }
+
+    .btn-substack:hover {
+      opacity: 0.9;
+      background-color: #f4f5f6f1;
+      color: #ff6719;
+      transition: 0.5s;
+    }
+
+    .btn-x {
+      background-color: #0f1419;
+      color: #ffffff;
+      border: 0.5px solid #fff;
+      box-shadow: 0 4px 6px rgba(15, 20, 25, 0.2);
+      transition: 0.5s;
+    }
+
+    .btn-x:hover {
+      opacity: 0.9;
+      background-color: #f4f5f6f1;
+      color: #0E0E0E;
+    }
+
+    .disclaimer {
+      font-size: 0.85em;
+      color: #b0baca;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 24px;
+    }
+
+    .disclaimer p {
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── FIXED UI ── -->
+  <div id="logo">Colubeat Investment Desk</div>
+  <div id="slide-counter"><span id="cur">01</span> / 13</div>
+  <nav id="progress-nav">
+    <div class="prog-dot active" onclick="goTo(0)" title="Cover"></div>
+    <div class="prog-dot" onclick="goTo(1)" title="Executive Summary"></div>
+    <div class="prog-dot" onclick="goTo(2)" title="Business Model"></div>
+    <div class="prog-dot" onclick="goTo(3)" title="Competitive Moat"></div>
+    <div class="prog-dot" onclick="goTo(4)" title="Financial Inflection"></div>
+    <div class="prog-dot" onclick="goTo(5)" title="Margins"></div>
+    <div class="prog-dot" onclick="goTo(6)" title="Real Estate"></div>
+    <div class="prog-dot" onclick="goTo(7)" title="Management"></div>
+    <div class="prog-dot" onclick="goTo(8)" title="Valuation"></div>
+    <div class="prog-dot" onclick="goTo(9)" title="Risk Matrix"></div>
+    <div class="prog-dot" onclick="goTo(10)" title="Conclusion"></div>
+    <div class="prog-dot" onclick="goTo(11)" title="Analyst Commentary"></div>
+  </nav>
+
+  <!-- ════════════════════════════════════════
+     SLIDE 1 — COVER
+════════════════════════════════════════ -->
+  <section class="slide" id="s1">
+    <div class="cover-bg"></div>
+    <div class="cover-gold-bar"></div>
+    <div class="cover-issue">
+      <div class="cover-ticker">$ERF.PA</div>
+      <span class="label" style="color:#fff;font-size:11px;letter-spacing:.2em;">EURONEXT PARIS · LARGE CAP</span>
+      <div class="cover-overweight">▲ OVERWEIGHT</div>
+    </div>
+
+    <div class="cover-content reveal">
+      <div class="cover-eyebrow">Investment Thesis · FY 2025 Update · February 2026</div>
+      <h1 class="cover-title">
+        Eurofins
+        <span>Scientific</span>
+      </h1>
+      <p class="cover-sub">The Industrialization of Science<br>and the Art of the Inflection Point</p>
+      <div class="cover-metrics">
+        <div class="cover-metric">
+          <div class="num">€58</div>
+          <div class="lbl">Entry Price Dec '25</div>
+        </div>
+        <div class="cover-metric">
+          <div class="num">€130</div>
+          <div class="lbl">Base Target</div>
+        </div>
+        <div class="cover-metric">
+          <div class="num">€876M</div>
+          <div class="lbl">FCF FY2025</div>
+        </div>
+        <div class="cover-metric">
+          <div class="num">22.5%</div>
+          <div class="lbl">EBITDA Margin</div>
+        </div>
+        <div class="cover-metric">
+          <div class="num">1:13</div>
+          <div class="lbl">Risk / Reward</div>
+        </div>
+      </div>
+    </div>
+    <div class="cover-scroll-hint">↓ &nbsp; SCROLL TO READ</div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+     SLIDE 2 — EXECUTIVE SUMMARY
+════════════════════════════════════════ -->
+  <section class="slide" id="s2">
+    <div class="s2-left">
+      <div>
+        <div class="label gold" style="margin-bottom:20px;font-size:9px;">01 — Investment Case</div>
+        <div
+          style="font-family:'Zilla Slab',serif;font-size:26px;font-weight:700;color:#fff;line-height:1.1;margin-bottom:16px;">
+          Executive<br>Summary</div>
+        <div style="width:30px;height:2px;background:var(--gold);margin-bottom:32px;"></div>
+      </div>
+      <div class="s2-kpi">
+        <div class="s2-kpi reveal d1">
+          <div class="num">€7.1B</div>
+          <div class="lbl">Revenue FY2025</div>
+        </div>
+        <div style="height:16px;"></div>
+        <div class="s2-kpi reveal d2">
+          <div class="num">22.5%</div>
+          <div class="lbl">Adj. EBITDA Margin</div>
+        </div>
+        <div style="height:16px;"></div>
+        <div class="s2-kpi reveal d3">
+          <div class="num">€876M</div>
+          <div class="lbl">Free Cash Flow</div>
+        </div>
+        <div style="height:16px;"></div>
+        <div class="s2-kpi reveal d4">
+          <div class="num">2.2×</div>
+          <div class="lbl">Net Debt / EBITDA</div>
+        </div>
+      </div>
+      <div style="font-size:10px;color:#d7d6d6f3;font-family:'Barlow Condensed',sans-serif;letter-spacing:.1em;">
+        COLUBEAT INVESTMENT DESK · FEB 2026</div>
+    </div>
+    <div class="s2-right">
+      <h2 class="s2-headline reveal">The Market Is Pricing<br>a Broken Business.<br><em
+          style="color:var(--gold);font-style:normal;">It's Not.</em></h2>
+      <p class="s2-subhead reveal d1">The drop in PCR testing created a gap between the stock price and the actual
+        business. The heavy spending phase is over,
+        and the infrastructure is now ready to scale without needing more big investments.
+      </p>
+      <div class="s2-bullet reveal d2">
+        <div class="s2-bullet-bar"></div>
+        <div>
+          <div class="s2-bullet-title">The PCR peak is gone, but the growth isn't.</div>
+          <div class="s2-bullet-body">Normalization is finally complete. What's left is a business that's much larger
+            than it was before 2020, with labs that
+            are already paid for and ready to handle more volume.</div>
+        </div>
+      </div>
+      <div class="s2-bullet reveal d3">
+        <div class="s2-bullet-bar"></div>
+        <div>
+          <div class="s2-bullet-title">The CapEx cycle has finally turned.</div>
+          <div class="s2-bullet-body">Spending fell from 7% to 4.5% of sales in 2025. This isn't a temporary dip; the
+            massive investment years are behind us.
+            The cash flow is now structural, meaning it stays in the business instead of being reinvested in
+            construction.</div>
+        </div>
+      </div>
+      <div class="s2-bullet reveal d4">
+        <div class="s2-bullet-bar"></div>
+        <div>
+          <div class="s2-bullet-title">Founder Alignment</div>
+          <div class="s2-bullet-body">Gilles Martin still owns 33% of the company. In 2025 alone, he put €541M into
+            buybacks. When a founder who usually
+            focuses on buying other companies starts buying his own shares instead, it's the clearest sign you can get
+            that the
+            market is wrong about the value.</div>
+        </div>
+      </div>
+      <div class="s2-bullet reveal d5">
+        <div class="s2-bullet-bar"></div>
+        <div>
+          <div class="s2-bullet-title">Governance Resolved</div>
+          <div class="s2-bullet-body">The governance noise is also settled. Shareholders approved the end of the old
+            real estate setup in late 2025. This
+            clears the main hurdle that kept big institutional funds from buying the stock. The path is now open for a
+            much wider
+            group of investors.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+     SLIDE 3 — BUSINESS MODEL
+════════════════════════════════════════ -->
+  <section class="slide" id="s3">
+    <div class="s3-inner">
+      <div class="s3-content">
+        <div class="label gold reveal" style="margin-bottom:12px;font-size:9px;">02 — Business Model</div>
+        <h2 class="serif reveal d1"
+          style="font-size:clamp(26px,3.5vw,40px);font-weight:700;color:#ffff;line-height:1.1;margin-bottom:12px;">
+          What Eurofins<br>Actually Does</h2>
+        <p class="reveal d2" style="font-size:13px;color:#ffffff;margin-bottom:12px;max-width:768px;">They run
+          the world's largest lab network, handling outsourced quality control for food, drugs, water, and healthcare.
+          They test everything from tap water to cancer medicine in over 60 countries to ensure they meet legal
+          standards.</p>
+
+        <div class="seg-card reveal d2">
+          <div class="seg-pct c1">50%</div>
+          <div>
+            <div class="seg-name">🌿 Food &amp; Environment</div>
+            <div class="seg-desc">Required by law. Companies can't skip these tests during a recession because they're
+              mandatory. This is the most stable
+              and recurring part of the business.</div>
+          </div>
+          <div class="seg-stats">
+            <div class="rev">€3,648M</div>
+            <div class="grow">+6.1% organic '25</div>
+          </div>
+        </div>
+        <div class="seg-card reveal d3">
+          <div class="seg-pct c2">33%</div>
+          <div>
+            <div class="seg-name">💊 BioPharma Services</div>
+            <div class="seg-desc">Support for drug development. Growth was slow at 1.4% this year but showed recovery
+              late in 2025. This is the
+              high-margin side where new digital tools add the most value.</div>
+          </div>
+          <div class="seg-stats">
+            <div class="rev">€2,408M</div>
+            <div class="grow">Recovery in Q4 '25</div>
+          </div>
+        </div>
+        <div class="seg-card reveal d4">
+          <div class="seg-pct c3">17%</div>
+          <div>
+            <div class="seg-name">🏥 Clinical Diagnostics</div>
+            <div class="seg-desc">Patient testing at scale. This area has finally found its level and stabilized after
+              the pandemic swings. It's now a
+              predictable and core part of the total revenue.</div>
+          </div>
+          <div class="seg-stats">
+            <div class="rev">€1,240M</div>
+            <div class="grow">+2.6% organic '25</div>
+          </div>
+        </div>
+      </div>
+      <div class="s3-image-col">
+        <div class="stat-stack">
+          <div class="stat-item reveal d1">
+            <div class="n">60+</div>
+            <div class="l">Countries</div>
+          </div>
+          <div class="stat-item reveal d2">
+            <div class="n">900+</div>
+            <div class="l">Legal entities</div>
+          </div>
+          <div class="stat-item reveal d3">
+            <div class="n">62k+</div>
+            <div class="l">Employees</div>
+          </div>
+          <div class="stat-item reveal d4">
+            <div class="n">39</div>
+            <div class="l">Years of network density</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+     SLIDE 4 — COMPETITIVE MOAT
+════════════════════════════════════════ -->
+  <section class="slide" id="s4">
+    <div class="s4-inner">
+      <div class="s4-header">
+        <div class="label gold reveal" style="font-size:9px;margin-bottom:10px;">03 — Competitive Moat</div>
+        <h2 class="serif reveal d1" style="font-size:clamp(28px,4vw,48px);font-weight:700;color:#fff;line-height:1.05;">
+          Three Moats</h2>
+        <p class="reveal d2" style="font-size:13px;color:var(--lightgray);margin-top:10px;max-width:600px;">Money can't
+          buy what 39 years of building labs and collecting data has created. The advantage isn't just the hardware;
+          it's the massive volume of information and the size of the network.</p>
+      </div>
+      <div class="s4-grid">
+        <div class="moat-card reveal d2">
+          <div class="moat-num">01</div>
+          <div class="moat-title">The Efficiency Gap</div>
+          <div class="moat-sub">Hub &amp; Spoke Economics</div>
+          <div class="moat-divider"></div>
+          <div class="moat-body">Small local labs are empty most of the day. Eurofins moves samples across its huge
+            network so their machines run 24/7.
+            This makes their cost-per-test much lower than anyone else's. They can set market prices and still make a
+            profit while
+            smaller labs barely survive.</div>
+          <div class="moat-case">Real-world win: During sudden contamination spikes (like recent PFAS regulations),
+            competitors had 2-week backlogs.
+            Eurofins used its scale to handle the volume instantly and took the market share.</div>
+        </div>
+        <div class="moat-card reveal d3">
+          <div class="moat-num">02</div>
+          <div class="moat-title">200,000 Method Library</div>
+          <div class="moat-sub">39 Years of Proprietary Data</div>
+          <div class="moat-divider"></div>
+          <div class="moat-body">When a new chemical or virus appears, competitors spend months trying to figure out how
+            to test for it. Eurofins has an
+            archive of 200,000 methods. They usually just find an old one and adapt it in days. This speed advantage
+            only grows as
+            they collect more data. You can't buy this; you have to earn it over decades.</div>
+          <div class="moat-case">Eurofins is usually the first to get ISO accreditation for new tests. Competitors start
+            from zero while Eurofins is
+            already selling the service.</div>
+        </div>
+        <div class="moat-card reveal d4">
+          <div class="moat-num">03</div>
+          <div class="moat-title">Software Integration</div>
+          <div class="moat-sub">Operational Switching Costs</div>
+          <div class="moat-divider"></div>
+          <div class="moat-body">Eurofins plugs its software directly into the client's internal systems. For a global
+            brand, seeing quality results from
+            50 countries in one dashboard is essential. Leaving Eurofins isn't just about finding a cheaper lab—it’s
+            about
+            rebuilding their entire quality control workflow. Most companies won't do it because the operational
+            headache is too
+            big.</div>
+          <div class="moat-case">The Lock-in: One click gives a global manager a full report across all regions. Moving
+            to a competitor would mean
+            managing dozens of different files and systems manually.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+     SLIDE 5 — FINANCIAL INFLECTION
+════════════════════════════════════════ -->
+  <section class="slide" id="s5">
+    <div class="label gold reveal" style="font-size:9px;margin-bottom:10px;margin-top: 20px;">04 — Financial Inflection
+    </div>
+    <h2 class="serif reveal d1"
+      style="font-size:clamp(24px,3.5vw,38px);font-weight:700;color:#fff;line-height:1.1;margin-bottom:6px;">
+      The Cash Flow Pivot</h2>
+    <p class="reveal d2" style="font-size:12px;color:var(--midgray);margin-bottom:20px;">Profits (EBITDA) are rising
+      while reinvestment needs (CapEx) are falling. The gap between these two is the Free Cash
+      Flow, and it's expanding fast. The heavy spending phase is over, now the business is starting to generate
+      serious cash.</p>
+    <div class="s5-inner">
+      <div class="s5-chart-area">
+        <div class="s5-chart-wrap reveal d2">
+          <canvas id="crocChart"></canvas>
+        </div>
+        <div class="reveal d3" style="display:flex;gap:24px;margin-top:12px;flex-wrap:wrap;">
+          <div
+            style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--midgray);font-family:'Barlow Condensed',sans-serif;letter-spacing:.06em;">
+            <div style="width:20px;height:3px;background:#40916C;border-radius:2px;"></div>ADJ. EBITDA
+          </div>
+          <div
+            style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--midgray);font-family:'Barlow Condensed',sans-serif;letter-spacing:.06em;">
+            <div style="width:20px;height:3px;background:#165bca;border-radius:2px;"></div>NET CAPEX
+          </div>
+          <div
+            style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--midgray);font-family:'Barlow Condensed',sans-serif;letter-spacing:.06em;">
+            <div style="width:20px;height:10px;background:rgba(64,145,108,.12);border-radius:2px;"></div>FCF ZONE
+          </div>
+        </div>
+      </div>
+      <div class="s5-stats">
+        <div class="stat-box reveal d1">
+          <div class="n" style="color:var(--green-light);">€876M</div>
+          <div class="l">Free Cash Flow FY2025</div>
+        </div>
+        <div class="stat-box reveal d2">
+          <div class="n" style="color:var(--gold);">4.5%</div>
+          <div class="l">Net CapEx % Revenue</div>
+        </div>
+        <div class="stat-box reveal d3">
+          <div class="n" style="color:var(--green-light);">+46%</div>
+          <div class="l">FCF Growth (vs FY2024)</div>
+        </div>
+        <div class="stat-box reveal d4">
+          <div class="n" style="color:#165bca;">€1.5B</div>
+          <div class="l">FCF Target (Mid-term)</div>
+        </div>
+      </div>
+      <p class="s5-expl"><strong>Why this
+          matters</strong><br>
+        Eurofins spent years building a massive global network of labs. That construction
+        phase was
+        expensive and ate up all their cash. In 2022, they were spending 7% of their sales just to keep building.
+
+        Now, that cycle is over. In 2025, they only needed to spend 4.5%. Because the labs are already built and plugged
+        into
+        the software, every new Euro of revenue has much higher margins. This is why the Free Cash Flow jumped to €876M.
+        We
+        aren't waiting for a future event anymore; the inflection point has already happened. The business has shifted
+        from
+        "building mode" to "cash machine mode," and the market hasn't fully re-rated the stock for this new reality.</p>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+     SLIDE 6 — MARGINS
+════════════════════════════════════════ -->
+  <section class="slide" id="s6">
+    <div class="s6-inner">
+      <div class="s6-left">
+        <div class="label gold reveal" style="font-size:9px;margin-bottom:10px;">05 — Margin Architecture</div>
+        <h2 class="serif reveal d1"
+          style="font-size:clamp(22px,2.8vw,34px);font-weight:700;color:#fff;line-height:1.1;margin-bottom:8px;">
+          The Real Profit Still Hidden</h2>
+        <p class="reveal d2" style="font-size:12px;color:var(--midgray);margin-bottom:2px;">CapEx has been falling
+          since 2022, but the margins don't show the full story yet. North America is already optimized and
+          shows exactly what happens when the network reaches full scale. Europe is simply trailing behind because the
+          IT rollout
+          and lab integrations are still being finished.</p>
+      </div>
+      <div class="s6-chart-wrap reveal d2">
+        <canvas id="capexChart"></canvas>
+      </div>
+      <p class="reveal d3"
+        style="font-size:11px;color:var(--gray);margin-top:12px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.04em;">
+        CapEx Intensity % of Revenue · Peak investment confirmed behind us</p>
+      <div class="s6-right">
+        <div class="label gold reveal" style="font-size:9px;margin-bottom:5px;margin-top:5px;">MARGIN BREAKDOWN</div>
+        <div class="margin-card reveal d1">
+          <div class="bar-accent" style="background:var(--gold);"></div>
+          <div class="pct" style="color:var(--gold);">21.8%</div>
+          <div class="info">
+            <div class="title">Overall Margin</div>
+            <div class="sub">This is the current reported number for the whole group. It includes the costs of
+              integrating new acquisitions like
+            </div>
+          </div>
+        </div>
+        <div class="margin-card reveal d2">
+          <div class="bar-accent" style="background:var(--green-light);"></div>
+          <div class="pct" style="color:var(--green-light);">23.8%</div>
+          <div class="info">
+            <div class="title">Mature Labs (93% Revenue)</div>
+            <div class="sub">If you only look at the labs that have been running for more than two years, the margin
+              is already much higher. This is
+              the "true" run-rate of the business.</div>
+          </div>
+        </div>
+        <div class="margin-card reveal d3">
+          <div class="bar-accent" style="background:#2D6A4F;"></div>
+          <div class="pct" style="color:#2D6A4F;">27.9%</div>
+          <div class="info">
+            <div class="title">North America — Record 2025</div>
+            <div class="sub">This is the gold standard. The US network is fully digital and optimized. It's a glimpse
+              into the future for the rest of
+              the company.</div>
+          </div>
+        </div>
+        <div class="margin-card reveal d4">
+          <div class="bar-accent" style="background:var(--slate);"></div>
+          <div class="pct" style="color:var(--slate);">17.4%</div>
+          <div class="info">
+            <div class="title">Europe</div>
+            <div class="sub">Europe is currently the laggard. They’re still moving everyone onto the same software
+              (eLIMS-NG), which should be
+              finished by 2027.</div>
+          </div>
+        </div>
+        <div class="reveal d5"
+          style="background:rgba(200,164,21,.07);border:1px solid rgba(200,164,21,.2);padding:8px;margin-top:7px;">
+          <div
+            style="font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:6px;">
+            24% Group Target by 2027</div>
+          <div style="font-size:12px;color:var(--midgray);">The 24% group target for 2027 isn't a miracle. As the new
+            labs mature and Europe starts using the same digital playbook
+            as the US, the whole company naturally moves toward that 24% level. It’s just a matter of finishing the
+            work already in
+            progress.</div>
+        </div>
+      </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+     SLIDE 7 — REAL ESTATE
+════════════════════════════════════════ -->
+  <section class="slide" id="s7">
+    <div class="s7-bg"></div>
+    <div class="s7-inner">
+      <div>
+        <div class="label gold reveal" style="font-size:9px;margin-bottom:12px;">06 — Real Estate Strategy</div>
+        <h2 class="serif reveal d1"
+          style="font-size:clamp(28px,4vw,50px);font-weight:700;color:#fff;line-height:1.05;max-width:600px;">Hidden
+          Value<br>in the Balance Sheet</h2>
+        <p class="reveal d2" style="font-size:13px;color:var(--lightgray);margin-top:14px;max-width:560px;">Eurofins
+          used to rent many of its labs from the founder’s holding company. In 2025, they bought them back, cleaning up
+          the balance sheet and fixing the biggest governance complaint investors had.</p>
+      </div>
+      <div class="s7-grid reveal d2">
+        <div class="re-card">
+          <div class="big">€443M</div>
+          <div class="title">Price Paid</div>
+          <div class="body">Independent experts (CBRE and JLL) appraised the value, and 95.6% of shareholders approved
+            the deal. It wasn't a
+            "insider" gift; it was a transparent purchase that the smartest funds in Europe signed off on.</div>
+        </div>
+        <div class="re-card">
+          <div class="big">~€1B</div>
+          <div class="title">Replacement Cost</div>
+          <div class="body">Building these high-tech labs from scratch today would cost about €1B. By buying them for
+            less than half that, Eurofins
+            added a huge amount of value to its assets instantly.</div>
+        </div>
+        <div class="re-card">
+          <div class="big">8.1%</div>
+          <div class="title">Implicit Yield</div>
+          <div class="body">The company was paying €36M a year in rent. By buying the buildings, they deleted that cost.
+            Since the debt used to buy
+            them costs much less than 8%, the move made the business more profitable right away.</div>
+        </div>
+        <div class="re-card">
+          <div class="big">50%</div>
+          <div class="title">Network Now Owned</div>
+          <div class="body">Eurofins now owns half of its global network. This protects the millions they've spent on
+            specialized equipment and
+            software inside those labs. They don't have to worry about landlords or the risk of moving and losing their
+            laboratory
+            accreditations.</div>
+        </div>
+      </div>
+      <div class="governance-banner reveal d4">
+        <div class="icon">💡</div>
+        <div class="text">The "founder conflict" is now gone. Big investment funds that weren't allowed to buy Eurofins
+          because of these property
+          deals can finally start adding the stock to their portfolios. These big players usually take 12 to 18 months
+          to build
+          their positions, which should provide a steady tailwind for the stock through 2026.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+     SLIDE 8 — MANAGEMENT
+════════════════════════════════════════ -->
+  <section class="slide" id="s8">
+    <div class="s8-inner">
+      <div class="s8-left">
+        <div class="label gold" style="font-size:9px;text-align:center;margin-bottom:8px;">07 — Management</div>
+        <div class="avatar-group">
+          <div class="avatar"><img class="imggilles" src="photo-Gilles-Martin-pdg-dEurofins-Scientific.webp"
+              alt="Gilles Martin Avatar">
+          </div>
+          <div class="s8-name reveal">Gilles Martin</div>
+          <div class="s8-role reveal">Founder &amp; CEO · Est. 1987</div>
+        </div>
+        <div class="s8-stake-group">
+          <div class="s8-stake reveal">~33%</div>
+          <div class="s8-stake-lbl">Ownership Stake</div>
+          <div class="s8-action reveal">€950M</div>
+          <div class="s8-action-lbl">Returned to Shareholders '21–25</div>
+          <div class="s8-action reveal">€602M</div>
+          <div class="s8-action-lbl">Buybacks in 2025 Alone</div>
+        </div>
+      </div>
+      <div class="s8-right">
+        <div class="label gold reveal" style="font-size:9px;margin-bottom:10px;">Capital Allocation Pivot</div>
+        <h2 class="serif reveal d1"
+          style="font-size:clamp(22px,3vw,34px);font-weight:700;color:#fff;margin-bottom:8px;line-height:1.1;">
+          Skin in the Game:<br>When the Founder Bets on Himself</h2>
+        <div class="tl-item reveal d2">
+          <div class="tl-year">2021–25</div>
+          <div>
+            <div class="tl-title">Over €950M returned since 2021.</div>
+            <div class="tl-body">The pivot is backed by data. He's moved from "growth at all costs" to "returning cash
+              to shareholders" because the
+              infrastructure is finally finished.</div>
+          </div>
+        </div>
+        <div class="tl-item reveal d3">
+          <div class="tl-year">2025</div>
+          <div>
+            <div class="tl-title">602M single-year buyback record, 40 deals for only €261M</div>
+            <div class="tl-body">For comparison, he only spent about €260M on acquisitions (M&A) in the same period.
+              He's explicitly saying that his own
+              company is a better deal than anything else he can find on the private market.</div>
+          </div>
+        </div>
+        <div class="tl-item reveal d4">
+          <div class="tl-year">H2 2025</div>
+          <div>
+            <div class="tl-title">Fixed the property conflict
+            </div>
+            <div class="tl-body">In late 2025, he sold his private labs to Eurofins at a fair market price. This wasn't
+              just about the real estate; it
+              was about choosing to grow the value of his 33% stake in the company instead of collecting private rent.
+            </div>
+          </div>
+        </div>
+        <div class="tl-item reveal d5">
+          <div class="tl-year">2022-27</div>
+          <div>
+            <div class="tl-title">The €2B digital lead.</div>
+            <div class="tl-body">While competitors are still using old systems, Eurofins is finishing a massive
+              five-year IT upgrade. By 2027, they'll
+              have an operational lead that would take a rival a decade and billions of dollars to replicate.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ceo-quote reveal d5">
+      <p>"Buying back shares is a better investment than any M&A right now... As long as this discount lasts, it's the
+        most
+        logical use of our cash."</p>
+      <cite>— Gilles Martin, CEO · FY2025 Earnings</cite>
+    </div>
+    </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+     SLIDE 9 — VALUATION
+════════════════════════════════════════ -->
+  <section class="slide" id="s9">
+    <div class="s9-inner">
+      <div>
+        <div class="label gold reveal" style="font-size:9px;margin-bottom:10px;">08 — Valuation &amp; Scenarios (2029E)
+        </div>
+        <h2 class="serif reveal d1"
+          style="font-size:clamp(24px,3.5vw,40px);font-weight:700;color:#fff;line-height:1.05;">
+          Stress-Testing the Thesis</h2>
+      </div>
+      <div class="s9-scenarios">
+        <div class="scenario-card bear reveal d2">
+          <div class="sc-header">
+            <div class="sc-label bear">Bear Case</div>
+            <div class="sc-price">€52</div>
+            <div class="sc-return neg">–9% from entry</div>
+          </div>
+          <div class="sc-body">
+            <div class="sc-row"><span class="k">EBITDA Margin</span><span class="v">19%</span></div>
+            <div class="sc-row"><span class="k">Growth CAGR</span><span class="v">3.5%</span></div>
+            <div class="sc-row"><span class="k">EV/EBITDA Multiple</span><span class="v">8.5×</span></div>
+            <div class="sc-row"><span class="k">Assumption</span><span class="v"
+                style="font-size:11px;color:var(--midgray);">The logic: This assumes everything stays messy. Pricing
+                power is lost, margins stay flat, and the market continues to
+                treat Eurofins like a broken business. Even in this disaster scenario, the real estate and lab equipment
+                provide a solid
+                floor.</span>
+            </div>
+          </div>
+        </div>
+        <div class="scenario-card base reveal d3">
+          <div class="sc-header">
+            <div class="sc-label base">★ Base Case</div>
+            <div class="sc-price">€130</div>
+            <div class="sc-return pos">+124% from entry</div>
+          </div>
+          <div class="sc-body">
+            <div class="sc-row"><span class="k">EBITDA Margin</span><span class="v">21.5%</span></div>
+            <div class="sc-row"><span class="k">Growth CAGR</span><span class="v">5.5%</span></div>
+            <div class="sc-row"><span class="k">FCF 2029E</span><span class="v">€950M</span></div>
+            <div class="sc-row"><span class="k">EV/EBITDA Multiple</span><span class="v">14–15×</span></div>
+            <div class="sc-row"><span class="k">Assumption</span><span class="v"
+                style="font-size:11px;color:var(--midgray);">The logic: The most likely path. Europe finally starts to
+                look like the US in terms of efficiency, and the IT rollout
+                finishes on time. The cash flow keeps growing simply because the heavy construction phase is
+                over.</span></div>
+          </div>
+        </div>
+        <div class="scenario-card bull reveal d4">
+          <div class="sc-header">
+            <div class="sc-label bull">Bull Case</div>
+            <div class="sc-price">€180+</div>
+            <div class="sc-return big">+210% from entry</div>
+          </div>
+          <div class="sc-body">
+            <div class="sc-row"><span class="k">EBITDA Margin</span><span class="v">24%+</span></div>
+            <div class="sc-row"><span class="k">Growth CAGR</span><span class="v">7%</span></div>
+            <div class="sc-row"><span class="k">EV/EBITDA Multiple</span><span class="v">17–18×</span></div>
+            <div class="sc-row"><span class="k">Assumption</span><span class="v"
+                style="font-size:11px;color:var(--midgray);">The logic: BioPharma growth takes off again as AI speeds up
+                drug discovery. The company hits its maximum efficiency
+                targets early, and the market re-rates Eurofins as a high-tech leader rather than just a lab
+                network.</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="rr-banner reveal d5">
+        <div class="rr-item">
+          <div class="rr-dot" style="background:var(--red);"></div><span style="color:var(--midgray);">Max
+            Downside</span><span class="val" style="color:var(--red);">–9%</span>
+        </div>
+        <div style="color:var(--midgray);font-size:18px;">vs</div>
+        <div class="rr-item">
+          <div class="rr-dot" style="background:var(--green-light);"></div><span style="color:var(--midgray);">Base
+            Upside</span><span class="val" style="color:var(--green-light);">+124%</span>
+        </div>
+        <div style="color:var(--midgray);font-family:'Zilla Slab',serif;font-size:18px;">=</div>
+        <div class="rr-item">
+          <div class="rr-dot" style="background:var(--gold);"></div><span style="color:var(--midgray);">Risk /
+            Reward</span><span class="val" style="color:var(--gold);">1:13</span>
+        </div>
+        <div
+          style="color:#e7f11de9;font-family:'Barlow Condensed',sans-serif;font-size:8px;letter-spacing:.12em;text-transform:uppercase;text-align: center;">
+          Bear protected by real asset value + FCF generation</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+     SLIDE 10 — RISK MATRIX
+════════════════════════════════════════ -->
+  <section class="slide" id="s10">
+    <div class="s10-inner">
+      <div>
+        <div class="label gold reveal" style="font-size:9px;margin-bottom:10px;margin-top: 20px;">09 — Risk Matrix</div>
+        <h2 class="serif reveal d1"
+          style="font-size:clamp(24px,3.5vw,38px);font-weight:700;color:#fff;line-height:1.05;">The Honest
+          Assessment</h2>
+        <p class="reveal d2" style="font-size:13px;color:var(--midgray);margin-top:8px;">No thesis is complete without a
+          clear-eyed view of what can go wrong. These are the risks ranked by materiality.</p>
+      </div>
+      <table class="risk-table reveal d2">
+        <thead>
+          <tr>
+            <th style="width:20%;">Risk</th>
+            <th style="width:10%;">Severity</th>
+            <th style="width:35%;">Description</th>
+            <th style="width:35%;">Mitigant</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="risk-name">Key Man Risk</div>
+              <div class="risk-sub">No succession plan for Gilles Martin</div>
+            </td>
+            <td><span class="sev high">High</span></td>
+            <td style="color:var(--midgray);font-size:12px;">Capital allocation re-rating and strategic uncertainty on
+              departure. 35 years of institutional knowledge in one person.</td>
+            <td style="color:var(--midgray);font-size:12px;">Decentralized structure provides operational continuity.
+              33% stake aligns any successor's incentives identically.</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="risk-name">Corporate Complexity</div>
+              <div class="risk-sub">~900 legal entities, governance opacity</div>
+            </td>
+            <td><span class="sev med">Med</span></td>
+            <td style="color:var(--midgray);font-size:12px;">Persistent short-seller target. ESG exclusion risk due to
+              structural opacity reducing financial visibility.</td>
+            <td style="color:var(--midgray);font-size:12px;">Related-party transactions now resolved. Governance
+              trajectory structurally improving. ESG overhang lifting.</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="risk-name">IT Execution Risk</div>
+              <div class="risk-sub">eLIMS-NG rollout delay</div>
+            </td>
+            <td><span class="sev med">Med</span></td>
+            <td style="color:var(--midgray);font-size:12px;">Delay pushes FCF inflection. Would hurt cash generation and
+              damage management credibility, leading to multiple compression.</td>
+            <td style="color:var(--midgray);font-size:12px;">N. America already live at 27.9% EBITDA margin. Proof of
+              concept is complete and running at scale.</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="risk-name">BioPharma Recovery Delay</div>
+              <div class="risk-sub">VC drought extends past 2026</div>
+            </td>
+            <td><span class="sev med">Med</span></td>
+            <td style="color:var(--midgray);font-size:12px;">Large Central Lab and Bioanalysis contracts slip beyond H2
+              2026. Growth gap persists longer than modeled.</td>
+            <td style="color:var(--midgray);font-size:12px;">Already baked in as 5.5% vs. management's 6.5% CAGR. H2
+              2025 acceleration (+2.0%) confirms the turn.</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="risk-name">French Tariff Cuts</div>
+              <div class="risk-sub">Government reimbursement pressure</div>
+            </td>
+            <td><span class="sev low">Low</span></td>
+            <td style="color:var(--midgray);font-size:12px;">Diagnostics margin dilution offset by volume strategy and
+              32 new Blood Collection Points opened in 2025.</td>
+            <td style="color:var(--midgray);font-size:12px;">2026–2027 regulatory agreement provides price stability.
+              Near-term uncertainty removed from the model.</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="risk-name">Leverage 2.2× ND/EBITDA</div>
+              <div class="risk-sub">Real estate acquisition raised debt</div>
+            </td>
+            <td><span class="sev low">Low</span></td>
+            <td style="color:var(--midgray);font-size:12px;">Within stated 1.5–2.5× target range. Debt is an asset-swap
+              (lease liability → financial debt), not operational burn.</td>
+            <td style="color:var(--midgray);font-size:12px;">€876M FCF fully self-finances all CapEx and bolt-on M&A.
+              Deleveraging from here on operating cash alone.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+     SLIDE 11 — CONCLUSION
+════════════════════════════════════════ -->
+  <section class="slide" id="s11">
+    <div class="s11-bg"></div>
+    <div class="s11-inner">
+      <div class="s11-left">
+        <div class="label gold reveal" style="font-size:9px;margin-bottom:16px;">10 — Conclusion</div>
+        <h2 class="s11-title reveal d1">The Infrastructure Is Ready.<br><em>The Cash Is</em><em>Flowing.</em>
+        </h2>
+        <div class="pillar reveal d2">
+          <div class="pillar-num">01</div>
+          <div>
+            <div class="pillar-title">CapEx Cycle Confirmed Over</div>
+            <div class="pillar-body">€876M FCF in FY2025. CapEx at 4.5% vs. 7% peak. Management confirmation: peak
+              investment is behind us. Cash generation is structural, not one-time.</div>
+          </div>
+        </div>
+        <div class="pillar reveal d3">
+          <div class="pillar-num">02</div>
+          <div>
+            <div class="pillar-title">Physical Moat — 35 Years Deep</div>
+            <div class="pillar-body">The world's largest scientific logistics network. Impossible to replicate. 50% of
+              footprint now owned. Built for decades, not quarters.</div>
+          </div>
+        </div>
+        <div class="pillar reveal d4">
+          <div class="pillar-num">03</div>
+          <div>
+            <div class="pillar-title">The Mix Effect — Hidden Profit Power</div>
+            <div class="pillar-body">Start-up labs from 2022–23 reached aggregate profitability in 2025. Mature scope at
+              23.7%. As young labs mature, group converges to 24% target naturally.</div>
+          </div>
+        </div>
+        <div class="pillar reveal d5">
+          <div class="pillar-num">04</div>
+          <div>
+            <div class="pillar-title">Full Alignment — Founder with 33% on the Line</div>
+            <div class="pillar-body">€888M returned since 2021. Governance cleaned up. Real estate sold at fair value.
+              When a serial acquirer bets this much on his own equity, follow him.</div>
+          </div>
+        </div>
+      </div>
+      <div class="s11-right">
+        <div class="target-ring reveal d2">
+          <div class="t">€130</div>
+          <div class="tl">Base Target</div>
+        </div>
+        <div class="long-badge reveal d3">▲ LONG — OVERWEIGHT</div>
+        <div class="s11-metrics reveal d4">
+          <div class="s11-metric-row"><span class="k">Entry Price</span><span class="v">€58</span></div>
+          <div class="s11-metric-row"><span class="k">Base Case</span><span class="v">€130 (+124%)</span></div>
+          <div class="s11-metric-row"><span class="k">Bull Case</span><span class="v">€180+ (+210%)</span></div>
+          <div class="s11-metric-row"><span class="k">Bear Floor</span><span class="v">€52 (–9%)</span></div>
+          <div class="s11-metric-row"><span class="k">Risk / Reward</span><span class="v">1:13</span></div>
+          <div class="s11-metric-row"><span class="k">FCF Yield (2025)</span><span class="v">>7×</span></div>
+          <div class="s11-metric-row"><span class="k">Horizon</span><span class="v">2027–2029</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+     SLIDE 12 — ANALYST COMMENTARY
+════════════════════════════════════════ -->
+  <section class="slide" id="s12">
+    <div class="s12-inner">
+      <div class="s12-header reveal">
+        <div class="firm">ColubeatID</div>
+      </div>
+      <div style="padding:10px 20px 20px 6px;flex-shrink:0;text-align: center;">
+        <h2 class="serif reveal" style="font-size:clamp(16px,2.8vw,30px);font-weight:700;color:#fff;padding:10px 0 0;">
+          What the
+          Market Is Missing -> Observations</h2>
+      </div>
+      <div class="s12-grid">
+        <div class="analyst-card reveal d1">
+          <div class="ac-header">
+            <div class="ac-num">01</div>
+            <div class="ac-title">Governance Discount Unwind</div>
+            <div class="ac-tag">Institutional Flow</div>
+          </div>
+          <div class="ac-body">ESG-mandated funds held <strong>zero</strong> ERF.PA not underweight, literally zero.
+            Post related-party resolution, this structural demand hasn't hit the stock yet. The timing coincides with
+            FCF expansion: the setup that triggers large institutional initiations on a <strong>12–18 month decision
+              lag.</strong></div>
+        </div>
+        <div class="analyst-card reveal d2">
+          <div class="ac-header">
+            <div class="ac-num">02</div>
+            <div class="ac-title">US → EU Margin Convergence</div>
+            <div class="ac-tag">~€30/Share Option</div>
+          </div>
+          <div class="ac-body">NA has a 27.9% margin, while EU is at 17.4%. This isn't structural <strong>This gap
+              isn't permanent. Europe is simply three years behind the US in finishing its IT and lab upgrades.</strong>
+            As Europe completes the exact same process, its margins will naturally catch up. If Europe just reaches a
+            24% margin,
+            that alone adds about €30 per share to the valuation. The market isn't pricing this in, even though the US
+            already
+            proved the plan works.</div>
+        </div>
+        <div class="analyst-card reveal d3">
+          <div class="ac-header">
+            <div class="ac-num">03</div>
+            <div class="ac-title">NWC Compression as Leading FCF Signal</div>
+            <div class="ac-tag">Management Quality</div>
+          </div>
+          <div class="ac-body">In three years, Eurofins cut the cash trapped in its daily operations from 5.1% down to
+            2.7% of sales. That change alone
+            freed up €142 million in real cash. This isn't a one, time accounting trick;
+            <strong>it shows a real shift in how the management team thinks</strong> They've moved from just focusing on
+            growth to being disciplined about cash efficiency. Historically, when European
+            industrial companies start prioritizing cash like this, the market usually rewards them with a much higher
+            valuation.
+            Once a team starts running the business with this mindset, it becomes the new normal.
+          </div>
+        </div>
+        <div class="analyst-card reveal d4">
+          <div class="ac-header">
+            <div class="ac-num">04</div>
+            <div class="ac-title">BioPharma Denominator Inversion</div>
+            <div class="ac-tag">Catalyst Timing</div>
+          </div>
+          <div class="ac-body">COVID revenues peaked H1 2024, collapsed H2. The comparison base inverts sharply in H2
+            2026. <strong>BioPharma organic growth could swing from sub-2% to 8–12%</strong> when large contracts
+            initiate. Consensus isn't modeling the base effect inversion correctly. Stocks move before analysts catch
+            up.</div>
+        </div>
+        <div class="analyst-card reveal d5">
+          <div class="ac-header">
+            <div class="ac-num">05</div>
+            <div class="ac-title">900 Entities = Antitakeover Poison Pill</div>
+            <div class="ac-tag">Structure Analysis</div>
+          </div>
+          <div class="ac-body">Short sellers flag opacity. They miss that this structure makes Eurofins <strong>nearly
+              impossible to acquire</strong>, 60+ regulatory jurisdictions, lab reaccreditations at hundreds of sites,
+            tax efficiency unwind. The complexity is simultaneously the risk AND the best poison pill that doesn't need
+            shareholder approval.</div>
+        </div>
+        <div class="analyst-card reveal d6">
+          <div class="ac-header">
+            <div class="ac-num">06</div>
+            <div class="ac-title">Serial Acquirer Buying Own Stock</div>
+            <div class="ac-tag">Capital Signal</div>
+          </div>
+          <div class="ac-body">Martin spent 35 years valuing private lab assets. When he says buybacks beat M&A, he's
+            making an explicit statement: <strong>public market price &lt; private market value.</strong> He deployed
+            €541M on this conviction in 2025. The arbitrage between public and private market valuation hasn't closed.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="slide" id="final">
+    <div class="thesis-footer-container">
+
+      <div class="thesis-outro">
+        <p class="highlight-text">🎯 If this thesis was helpful... check the links on this page</p>
+        <p>→ RT + Follow for more analyses like this.</p>
+        <p>→ Reply with your opinion on $ERF.PA</p>
+        <p class="margin-top">Thanks for reading to the end!</p>
+        <p class="reader-supported">This Substack is reader-supported. To receive new posts and support my work,
+          consider
+          becoming a free or paid subscriber.</p>
+      </div>
+
+      <div class="cta-box">
+        <p class="cta-text">
+          Research shouldn't just sit there and get dusty. If you want to see where I'm taking this thesis next, I’m
+          usually on
+          Substack or X.
+        </p>
+
+        <div class="button-group">
+          <a href="https://colubeatid.substack.com/" target="_blank" class="btn btn-substack">
+            Subscribe to Substack
+          </a>
+          <a href="https://x.com/ColubeatID" target="_blank" class="btn btn-x">
+            Follow on X
+          </a>
+        </div>
+      </div>
+
+      <div class="disclaimer">
+        <p><strong>DISCLAIMER:</strong> Nothing in this document constitutes financial advice. I'm not a financial
+          advisor.
+          This report is for educational and informational purposes only and represents my personal opinions and
+          research.
+          All investment strategies and investments involve risk of loss. You should consult with a professional
+          financial
+          advisor before making any specific investment decisions.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <script>
+    // ── CHARTS ────────────────────────────────────────────────────────────────────
+    const fontDefaults = {
+      family: "'Barlow Condensed', sans-serif",
+      size: 11,
+    };
+    Chart.defaults.font = fontDefaults;
+    Chart.defaults.color = '#787878';
+
+    // Crocodile Mouth
+    const crocCtx = document.getElementById('crocChart').getContext('2d');
+    const fcfGrad = crocCtx.createLinearGradient(0, 0, 0, 260);
+    fcfGrad.addColorStop(0, 'rgba(64,145,108,.14)');
+    fcfGrad.addColorStop(1, 'rgba(64,145,108,.01)');
+
+    new Chart(crocCtx, {
+      type: 'line',
+      data: {
+        labels: ['2022', '2023', '2024', '2025', '2026E', '2027E'],
+        datasets: [
+          {
+            label: 'Adj. EBITDA (€M)',
+            data: [1520, 1540, 1590, 1640, 1750, 1920],
+            borderColor: '#40916C',
+            borderWidth: 2.5,
+            pointBackgroundColor: '#40916C',
+            pointRadius: 5,
+            pointHoverRadius: 7,
+            tension: 0.35,
+            fill: false,
+          },
+          {
+            label: 'Net CapEx (€M)',
+            data: [490, 450, 365, 328, 305, 285],
+            borderColor: '#165bca',
+            borderWidth: 2.5,
+            pointBackgroundColor: '#165bca',
+            pointRadius: 5,
+            pointHoverRadius: 7,
+            tension: 0.35,
+            fill: { target: 0, above: fcfGrad },
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#1A1A1A',
+            borderColor: '#333',
+            borderWidth: 1,
+            titleColor: '#ADADAD',
+            bodyColor: '#FAF8F4',
+            padding: 10,
+            callbacks: { label: c => ` ${c.dataset.label}: €${c.raw}M` }
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: 'rgba(111,111,111,.09)' },
+            ticks: { font: { family: "'Barlow Condensed', sans-serif", size: 11 }, letterSpacing: 2 }
+          },
+          y: {
+            grid: { color: 'rgba(111,111,111,.09)' },
+            ticks: { callback: v => `€${v}M`, font: { family: "'Barlow Condensed', sans-serif", size: 11 } },
+            min: 200
+          }
+        }
+      }
+    });
+
+    // CapEx bar chart
+    const capexCtx = document.getElementById('capexChart').getContext('2d');
+    new Chart(capexCtx, {
+      type: 'bar',
+      data: {
+        labels: ['2022', '2023', '2024', '2025', '2026E', '2027E'],
+        datasets: [{
+          data: [6.8, 6.0, 5.2, 4.5, 4.0, 3.5],
+          backgroundColor: ['#165bca', '#126ccb', '#126ccb', 'rgba(64,145,108,.7)', 'rgba(64,145,108,.4)', 'rgba(64,145,108,.25)'],
+          borderColor: ['transparent', 'transparent', 'transparent', '#40916C', 'transparent', 'transparent'],
+          borderWidth: 2,
+          borderRadius: 2,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#1A1A1A',
+            borderColor: '#333',
+            borderWidth: 1,
+            bodyColor: '#FAF8F4',
+            callbacks: { label: c => ` ${c.raw}% of Revenue` }
+          }
+        },
+        scales: {
+          x: { grid: { display: false }, ticks: { font: { family: "'Barlow Condensed', sans-serif", size: 10 } } },
+          y: {
+            grid: { color: 'rgba(211,111,222,.09)' },
+            ticks: { callback: v => v + '%', font: { family: "'Barlow Condensed', sans-serif", size: 10 } },
+            min: 0, max: 10,
+          }
+        }
+      }
+    });
+
+    // ── SCROLL & NAV ──────────────────────────────────────────────────────────────
+    const slides = document.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('.prog-dot');
+    const counter = document.getElementById('cur');
+
+    function goTo(i) {
+      slides[i].scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Active dot + counter on scroll
+    const slideObs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting && e.intersectionRatio > 0.5) {
+          const idx = Array.from(slides).indexOf(e.target);
+          dots.forEach(d => d.classList.remove('active'));
+          if (dots[idx]) dots[idx].classList.add('active');
+          counter.textContent = String(idx + 1).padStart(2, '0');
+          // Trigger moat card top-bar animation on slide 4
+          if (idx === 3) {
+            setTimeout(() => {
+              document.querySelectorAll('.moat-card').forEach(c => c.classList.add('in'));
+            }, 400);
+          }
+        }
+      });
+    }, { threshold: 0.5 });
+
+    slides.forEach(s => slideObs.observe(s));
+
+    // Reveal animations
+    const revealObs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+    // Keyboard navigation
+    document.addEventListener('keydown', e => {
+      const active = [...dots].findIndex(d => d.classList.contains('active'));
+      if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); if (active < slides.length - 1) goTo(active + 1); }
+      if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); if (active > 0) goTo(active - 1); }
+    });
+  </script>
+</body>
+
+</html>
